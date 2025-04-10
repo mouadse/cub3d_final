@@ -6,7 +6,7 @@
 #    By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/10 12:31:32 by msennane          #+#    #+#              #
-#    Updated: 2025/04/10 12:35:18 by msennane         ###   ########.fr        #
+#    Updated: 2025/04/10 12:42:26 by msennane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = cub3d
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -fsanitize=address,leak,undefined -O0 -g3
 MLXFLAGS = -lmlx -lXext -lX11 -lm
 
 # Directories
