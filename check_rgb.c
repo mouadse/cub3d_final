@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:27:04 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/10 12:27:34 by msennane         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:21:47 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,8 @@ void	split_rgb(char ***rgb, char *rgb_color, char *original, char c)
 
 uint32_t	convert_rgb(int r, int g, int b)
 {
-	return (r << 24 | g << 16 | b << 8 | 255);
+	// Cast r, g, b to uint32_t before shifting
+	return (((uint32_t)r << 24) | ((uint32_t)g << 16) | ((uint32_t)b << 8) | 255);
 }
 
 static void	handle_error_rgb(char *original, char **rgb)
