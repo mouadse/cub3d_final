@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/06 14:44:43 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/06 17:49:28 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,24 @@
 
 # define SCREEN_WIDTH 800
 # define SCREEN_HEIGHT 600
+
+# define KEY_ESC 65307
+# define KEY_W 119
+# define KEY_S 115
+# define KEY_A 97
+# define KEY_D 100
+# define KEY_LEFTAR 65361
+# define KEY_RIGHTAR 65363
+
+typedef struct s_keys
+{
+	bool		w;
+	bool		s;
+	bool		a;
+	bool		d;
+	bool		left;
+	bool		right;
+}				t_keys;
 
 typedef struct s_vec2
 {
@@ -113,6 +131,7 @@ typedef struct s_cub3d
 	t_vec2 camera_plane;    // Camera plane for raycasting
 	int last_hit_side;      // Last wall side hit (0: X, 1: Y)
 	float frame_time;       // Time per frame
+	t_keys keys;            // Key states
 	t_config *config;       // Game configuration
 }				t_cub3d;
 
@@ -193,5 +212,8 @@ void			init_side_dist(t_dda *ray, t_vec2 pos);
 /* Raycasting core functions */
 void			perform_dda(t_dda *ray, char **map, int *hit_side);
 void			draw_rays(t_cub3d *game);
+
+/* Movement and player control */
+void			update_player_movement(t_cub3d *game);
 
 #endif
