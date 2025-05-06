@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/10 12:31:20 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/06 14:44:43 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@
 # define ERR_INVALID_EXTENSION "Error: invalid .cub file.\n"
 # define ERR_INVALID_CHARACTER "Error: bad character in map.\n"
 # define ERR_PLAYER_COUNT "Error: one player required.\n"
+
+# define PI 3.141592653589793
+# define TEX_WIDTH 64
+# define TEX_HEIGHT 64
+
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
+
+typedef struct s_vec2
+{
+	float		x;
+	float		y;
+}				t_vec2;
+
+typedef struct s_point
+{
+	int			x;
+	int			y;
+}				t_point;
 
 typedef struct s_validator
 {
@@ -54,9 +73,47 @@ typedef struct s_config
 	int			character_pos_y;
 }				t_config;
 
+typedef struct s_wall_slice
+{
+	int			slice_height;
+	int			draw_start_y;
+	int			draw_end_y;
+	int			tex_x;
+	int			tex_y;
+	float		hit_pos_x;
+	float		tex_step;
+	float		tex_pos;
+}				t_wall_slice;
+
+typedef struct s_dda
+{
+	float		plane_multiplier;
+	t_vec2		dir;
+	t_vec2		camera_pixel;
+	t_vec2		delta_dist;
+	t_vec2		dist_side;
+	t_point		map;
+	t_point		step;
+	int			hit_side;
+	float		perp_dist;
+	float		wall_hit_x;
+}				t_dda;
+
 typedef struct s_cub3d
 {
-	t_config	*config;
+	void *mlx_ptr;          // MLX library context
+	void *window_ptr;       // MLX window/image pointer
+	void *north_texture;    // North wall texture
+	void *south_texture;    // South wall texture
+	void *west_texture;     // West wall texture
+	void *east_texture;     // East wall texture
+	int *texture_pixels[4]; // Texture pixel buffers (N, S, W, E)
+	t_vec2 player_pos;      // Player position
+	t_vec2 player_dir;      // Player direction
+	t_vec2 camera_plane;    // Camera plane for raycasting
+	int last_hit_side;      // Last wall side hit (0: X, 1: Y)
+	float frame_time;       // Time per frame
+	t_config *config;       // Game configuration
 }				t_cub3d;
 
 /* File handling and validation */
@@ -118,5 +175,23 @@ void			ft_free_matrix(char **matrix);
 /* String utilities */
 
 int				ft_isspace(int c);
+
+/* Matrix and Vector Operations */
+
+t_vec2			create_vector(float x, float y);
+t_vec2			vector_add(t_vec2 a, t_vec2 b);
+t_vec2			vector_subtract(t_vec2 a, t_vec2 b);
+t_vec2			vector_multiply(t_vec2 a, float scalar);
+float			vector_magnitude(t_vec2 a);
+t_vec2			rotate_vector(t_vec2 vector, float angle);
+
+/* Raycasting math utilities */
+int				sign_of(float v);
+t_vec2			calc_delta_dist(t_vec2 dir);
+void			init_side_dist(t_dda *ray, t_vec2 pos);
+
+/* Raycasting core functions */
+void			perform_dda(t_dda *ray, char **map, int *hit_side);
+void			draw_rays(t_cub3d *game);
 
 #endif

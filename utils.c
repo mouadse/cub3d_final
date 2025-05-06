@@ -85,8 +85,8 @@ void	handle_error(char *message)
  */
 int	open_file(char *map_file)
 {
-	int	fd;
-		char error_msg[100] = "Error: could not open file: ";
+	int		fd;
+	char	error_msg[100] = "Error: could not open file: ";
 
 	fd = open(map_file, O_RDONLY);
 	if (fd == -1)
