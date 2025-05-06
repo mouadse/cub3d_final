@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/06 17:49:28 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/06 18:14:18 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,20 +119,20 @@ typedef struct s_dda
 
 typedef struct s_cub3d
 {
-	void *mlx_ptr;          // MLX library context
-	void *window_ptr;       // MLX window/image pointer
-	void *north_texture;    // North wall texture
-	void *south_texture;    // South wall texture
-	void *west_texture;     // West wall texture
-	void *east_texture;     // East wall texture
-	int *texture_pixels[4]; // Texture pixel buffers (N, S, W, E)
-	t_vec2 player_pos;      // Player position
-	t_vec2 player_dir;      // Player direction
-	t_vec2 camera_plane;    // Camera plane for raycasting
-	int last_hit_side;      // Last wall side hit (0: X, 1: Y)
-	float frame_time;       // Time per frame
-	t_keys keys;            // Key states
-	t_config *config;       // Game configuration
+	void *mlx_ptr;
+	void *window_ptr;
+	void *north_texture;
+	void *south_texture;
+	void *west_texture;
+	void *east_texture;
+	int *texture_pixels[4];
+	t_vec2 player_pos;
+	t_vec2 player_dir;
+	t_vec2 camera_plane;
+	int last_hit_side;
+	float frame_time;
+	t_keys keys;
+	t_config *config;
 }				t_cub3d;
 
 /* File handling and validation */
