@@ -6,25 +6,27 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:06:49 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 13:03:54 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:33:39 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-int	select_texture(t_cub3d *game, t_dda *ray)
+t_tex	*get_wall_texture(t_cub3d *game, t_dda *ray)
 {
-	if (ray->hit_side == 0)
+	if (ray->hit_side == 1)
 	{
-		if (ray->step.x < 0)
-			return (0);
-		return (1);
+		if (ray->step.y < 0)
+			return (game->north_texture);
+		else
+			return (game->south_texture);
 	}
 	else
 	{
-		if (ray->step.y < 0)
-			return (2);
-		return (3);
+		if (ray->step.x < 0)
+			return (game->west_texture);
+		else
+			return (game->east_texture);
 	}
 }
 
@@ -40,22 +42,21 @@ void	intersection_point(t_dda *ray, t_cub3d *game, t_wall_slice *wall)
 
 void	find_texture_position_x(t_dda *ray, t_cub3d *game, t_wall_slice *wall)
 {
-	int	texture_id;
-
-	texture_id = select_texture(game, ray);
-	wall->tex_x = (int)(wall->hit_pos_x * TEX_WIDTH);
-	if ((ray->hit_side == 0 && ray->dir.x > 0) || (ray->hit_side == 1
-			&& ray->dir.y < 0))
-		wall->tex_x = TEX_WIDTH - wall->tex_x - 1;
-	game->last_hit_side = ray->hit_side;
+	wall->tex_x = (int)(wall->hit_pos_x * game->texture->w);
+	if ((ray->hit_side == 0 && ray->dir.x < 0) || (ray->hit_side == 1
+			&& ray->dir.y > 0))
+		wall->tex_x = game->texture->w - wall->tex_x - 1;
+	wall->tex_step = 1.0 * game->texture->h / wall->slice_height;
 }
 
 static void	render_wall(t_cub3d *game, int pixel, t_wall_slice *wall)
 {
 	int			tex_y;
 	uint32_t	col;
+	int			y;
 
-	for (int y = wall->draw_start_y; y < wall->draw_end_y; ++y)
+	y = wall->draw_start_y;
+	while (y < wall->draw_end_y)
 	{
 		tex_y = (int)wall->tex_pos;
 		if (tex_y < 0)
@@ -65,6 +66,7 @@ static void	render_wall(t_cub3d *game, int pixel, t_wall_slice *wall)
 		wall->tex_pos += wall->tex_step;
 		col = tex_pixel(game->texture, wall->tex_x, tex_y);
 		my_mlx_pixel_put(&game->img, pixel, y, col);
+		y++;
 	}
 }
 
@@ -72,6 +74,7 @@ void	draw_wall(t_dda *ray, t_cub3d *game, int pixel)
 {
 	t_wall_slice	wall;
 
+	game->texture = get_wall_texture(game, ray); // Get the correct texture
 	wall.slice_height = (int)(SCREEN_HEIGHT / ray->perp_dist);
 	wall.draw_start_y = (SCREEN_HEIGHT / 2 - wall.slice_height / 2);
 	wall.draw_end_y = (SCREEN_HEIGHT / 2 + wall.slice_height / 2);
