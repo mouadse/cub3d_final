@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:06:49 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 11:47:19 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 13:03:54 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,21 @@ void	find_texture_position_x(t_dda *ray, t_cub3d *game, t_wall_slice *wall)
 	game->last_hit_side = ray->hit_side;
 }
 
-void	render_wall(t_cub3d *game, int pixel, t_wall_slice *wall)
+static void	render_wall(t_cub3d *game, int pixel, t_wall_slice *wall)
 {
-	int	y;
-	int	color;
-	int	texture_y;
-	int	texture_id;
+	int			tex_y;
+	uint32_t	col;
 
-	texture_id = select_texture(game, NULL);
-	y = wall->draw_start_y;
-	while (y < wall->draw_end_y)
+	for (int y = wall->draw_start_y; y < wall->draw_end_y; ++y)
 	{
-		texture_y = (int)wall->tex_pos & (TEX_HEIGHT - 1);
+		tex_y = (int)wall->tex_pos;
+		if (tex_y < 0)
+			tex_y = 0;
+		if (tex_y >= game->texture->h)
+			tex_y = game->texture->h - 1;
 		wall->tex_pos += wall->tex_step;
-		color = game->texture_pixels[texture_id][TEX_WIDTH * texture_y
-			+ wall->tex_x];
-		if (game->last_hit_side == 1)
-			color = (color >> 1) & 8355711;
-		mlx_pixel_put(game->mlx, game->win, pixel, y, color);
-		y++;
+		col = tex_pixel(game->texture, wall->tex_x, tex_y);
+		my_mlx_pixel_put(&game->img, pixel, y, col);
 	}
 }
 
