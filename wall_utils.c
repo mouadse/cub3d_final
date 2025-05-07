@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:06:49 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/06 16:06:54 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 11:47:19 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	render_wall(t_cub3d *game, int pixel, t_wall_slice *wall)
 			+ wall->tex_x];
 		if (game->last_hit_side == 1)
 			color = (color >> 1) & 8355711;
-		mlx_pixel_put(game->mlx_ptr, game->window_ptr, pixel, y, color);
+		mlx_pixel_put(game->mlx, game->win, pixel, y, color);
 		y++;
 	}
 }

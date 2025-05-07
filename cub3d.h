@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/06 18:14:18 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 11:58:24 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 # define TEX_WIDTH 64
 # define TEX_HEIGHT 64
 
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
+# define SCREEN_WIDTH 1280
+# define SCREEN_HEIGHT 720
 
 # define KEY_ESC 65307
 # define KEY_W 119
@@ -117,22 +117,46 @@ typedef struct s_dda
 	float		wall_hit_x;
 }				t_dda;
 
+typedef struct s_img
+{
+	void		*ptr;
+	char		*addr;
+	int			bpp;
+	int			line_len;
+	int			endian;
+	int			w;
+	int			h;
+}				t_img;
+
+typedef struct s_tex
+{
+	void		*ptr;
+	char		*addr;
+	int			bpp;
+	int			line_len;
+	int			endian;
+	int			w;
+	int			h;
+}				t_tex;
+
 typedef struct s_cub3d
 {
-	void *mlx_ptr;
-	void *window_ptr;
-	void *north_texture;
-	void *south_texture;
-	void *west_texture;
-	void *east_texture;
-	int *texture_pixels[4];
-	t_vec2 player_pos;
-	t_vec2 player_dir;
-	t_vec2 camera_plane;
-	int last_hit_side;
-	float frame_time;
-	t_keys keys;
-	t_config *config;
+	void		*mlx;
+	void		*win;
+	t_tex		north_texture;
+	t_tex		south_texture;
+	t_tex		west_texture;
+	t_tex		east_texture;
+	t_tex		*texture;
+	int			*texture_pixels[4];
+	t_vec2		player_pos;
+	t_vec2		player_dir;
+	t_vec2		camera_plane;
+	int			last_hit_side;
+	float		frame_time;
+	t_keys		keys;
+	t_img		img;
+	t_config	*config;
 }				t_cub3d;
 
 /* File handling and validation */
