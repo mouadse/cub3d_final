@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 12:53:37 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 16:03:31 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,6 +236,7 @@ void			init_side_dist(t_dda *ray, t_vec2 pos);
 /* Raycasting core functions */
 void			perform_dda(t_dda *ray, char **map, int *hit_side);
 void			draw_rays(t_cub3d *game);
+void			draw_wall(t_dda *ray, t_cub3d *game, int pixel);
 
 /* Movement and player control */
 void			update_player_movement(t_cub3d *game);
@@ -248,5 +249,12 @@ double	now_sec(void); // To be removed later
 uint32_t		tex_pixel(t_tex *t, int x, int y);
 void			init_image(t_cub3d *g, int w, int h);
 void			my_mlx_pixel_put(t_img *img, int x, int y, uint32_t col);
+void			load_textures(t_cub3d *game);
+
+// Add hooks for close, loop, and input events
+int				close_window(t_cub3d *game);
+int				game_loop(t_cub3d *game);
+int				key_press(int keycode, t_cub3d *game);
+int				key_release(int keycode, t_cub3d *game);
 
 #endif

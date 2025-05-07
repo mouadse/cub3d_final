@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 12:04:35 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/06 14:44:46 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 16:31:12 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,15 @@ void	draw_rays(t_cub3d *game)
 		ray.plane_multiplier = 2.0f * pixel / (float)SCREEN_WIDTH - 1.0f;
 		ray.camera_pixel = vector_multiply(game->camera_plane, ray.plane_multiplier);
 		ray.dir = vector_add(game->player_dir, ray.camera_pixel);
-		ray.dir.x = sign_of(ray.dir.x);
-		ray.dir.y = sign_of(ray.dir.y);
+
+		// Calculate map position and initialize distances
+		ray.map.x = (int)game->player_pos.x;
+		ray.map.y = (int)game->player_pos.y;
 		ray.delta_dist = calc_delta_dist(ray.dir);
 		init_side_dist(&ray, game->player_pos);
+
 		perform_dda(&ray, game->config->grid, &game->last_hit_side);
-		// draw_wall(&ray, game, pixel);
+		draw_wall(&ray, game, pixel);
 		pixel++;
 	}
 }

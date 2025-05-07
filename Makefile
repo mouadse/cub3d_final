@@ -6,7 +6,7 @@
 #    By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/10 12:31:32 by msennane          #+#    #+#              #
-#    Updated: 2025/04/10 12:42:26 by msennane         ###   ########.fr        #
+#    Updated: 2025/05/07 15:50:01 by msennane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = cub3d
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -fsanitize=address,leak,undefined -O0 -g3
+CFLAGS = -Wall -Wextra #-fsanitize=address,leak,undefined -O3 -g3
 MLXFLAGS = -lmlx -lXext -lX11 -lm
 
 # Directories
@@ -23,7 +23,10 @@ GNL_DIR = get_next_line
 
 # Source files
 SRCS = main.c validation.c check_path.c data_processing.c \
-	check_rgb.c map.c map_utils.c tabs.c utils.c check_wall.c
+	check_rgb.c map.c map_utils.c tabs.c utils.c check_wall.c \
+	camera.c event_hooks.c raycasting.c raycasting_utils.c \
+	render_background.c textures.c vector_ops.c wall_rendering.c \
+	wall_utils.c player_movement.c my_mlx_utils.c
 
 # Get_next_line files
 GNL_SRCS = $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c

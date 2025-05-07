@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:04:44 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 12:53:21 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 16:03:29 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	draw_background(t_cub3d *game)
 {
-	uint32_t	x;
-	uint32_t	y;
+	int	x;
+	int	y;
 
 	y = 0;
 	while (y < game->img.h / 2)

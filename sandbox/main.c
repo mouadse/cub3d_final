@@ -183,16 +183,16 @@ static inline uint32_t set_wall_colour(int side,int stepX,int stepY)
 // -----------------------------------------------------------------------------
 static void key_press(mlx_key_data_t k, void *param)
 {
-    t_game *g = param;
-    bool v = k.action != MLX_RELEASE;
+	t_game *g = param;
+	bool v = k.action != MLX_RELEASE;
 
-    if (k.key == MLX_KEY_W)     g->keys.w     = v;
-    if (k.key == MLX_KEY_S)     g->keys.s     = v;
-    if (k.key == MLX_KEY_A)     g->keys.a     = v;
-    if (k.key == MLX_KEY_D)     g->keys.d     = v;
-    if (k.key == MLX_KEY_LEFT)  g->keys.left  = v;
-    if (k.key == MLX_KEY_RIGHT) g->keys.right = v;
-    if (k.key == MLX_KEY_ESCAPE && v) mlx_close_window(g->mlx);
+	if (k.key == MLX_KEY_W)     g->keys.w     = v;
+	if (k.key == MLX_KEY_S)     g->keys.s     = v;
+	if (k.key == MLX_KEY_A)     g->keys.a     = v;
+	if (k.key == MLX_KEY_D)     g->keys.d     = v;
+	if (k.key == MLX_KEY_LEFT)  g->keys.left  = v;
+	if (k.key == MLX_KEY_RIGHT) g->keys.right = v;
+	if (k.key == MLX_KEY_ESCAPE && v) mlx_close_window(g->mlx);
 }
 
 // -----------------------------------------------------------------------------

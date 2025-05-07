@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 15:06:49 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 15:33:39 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 16:48:52 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,15 @@ static void	render_wall(t_cub3d *game, int pixel, t_wall_slice *wall)
 void	draw_wall(t_dda *ray, t_cub3d *game, int pixel)
 {
 	t_wall_slice	wall;
+	float			safe_dist;
 
-	game->texture = get_wall_texture(game, ray); // Get the correct texture
-	wall.slice_height = (int)(SCREEN_HEIGHT / ray->perp_dist);
+	safe_dist = ray->perp_dist;
+	if (safe_dist <= 0.0001f) // never let it be zero/negative
+		safe_dist = 0.0001f;
+	game->texture = get_wall_texture(game, ray);
+		// Get the correct texture
+	wall.slice_height = (int)(SCREEN_HEIGHT / safe_dist);
+		// Use safe_dist instead of ray->perp_dist
 	wall.draw_start_y = (SCREEN_HEIGHT / 2 - wall.slice_height / 2);
 	wall.draw_end_y = (SCREEN_HEIGHT / 2 + wall.slice_height / 2);
 	if (wall.draw_start_y < 0)
