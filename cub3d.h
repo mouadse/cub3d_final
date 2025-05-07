@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 12:01:07 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 12:53:37 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,10 +143,10 @@ typedef struct s_cub3d
 {
 	void		*mlx;
 	void		*win;
-	t_tex		north_texture;
-	t_tex		south_texture;
-	t_tex		west_texture;
-	t_tex		east_texture;
+	t_tex		*north_texture;
+	t_tex		*south_texture;
+	t_tex		*west_texture;
+	t_tex		*east_texture;
 	t_tex		*texture;
 	int			*texture_pixels[4];
 	t_vec2		player_pos;
@@ -241,6 +241,12 @@ void			draw_rays(t_cub3d *game);
 void			update_player_movement(t_cub3d *game);
 
 /* Rendering functions */
-void	draw_background(t_cub3d *game);
+void			draw_background(t_cub3d *game);
+void			draw_background2(t_cub3d *game);
+/* My MLX functions */
+double	now_sec(void); // To be removed later
+uint32_t		tex_pixel(t_tex *t, int x, int y);
+void			init_image(t_cub3d *g, int w, int h);
+void			my_mlx_pixel_put(t_img *img, int x, int y, uint32_t col);
 
 #endif
