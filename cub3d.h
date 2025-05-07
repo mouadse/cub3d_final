@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 11:58:24 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 12:01:07 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,5 +239,8 @@ void			draw_rays(t_cub3d *game);
 
 /* Movement and player control */
 void			update_player_movement(t_cub3d *game);
+
+/* Rendering functions */
+void	draw_background(t_cub3d *game);
 
 #endif

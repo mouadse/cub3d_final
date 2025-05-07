@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:04:44 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 11:45:52 by msennane         ###   ########.fr       */
+/*   Updated: 2025/05/07 12:00:51 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,22 @@ void	draw_background(t_cub3d *game)
 	uint32_t	y;
 
 	y = 0;
-	while (y < game->img_height / 2)
+	while (y < game->img.h / 2)
 	{
 		x = 0;
-		while (x < game->img_width)
+		while (x < game->img.w)
 		{
-			mlx_pixel_put(game->mlx, game->win, x, y, game->data->ceiling);
+			mlx_pixel_put(game->mlx, game->win, x, y, game->config->ceiling_rgb);
 			x++;
 		}
 		y++;
 	}
-	while (y < game->img_height)
+	while (y < game->img.h)
 	{
 		x = 0;
-		while (x < game->img_width)
+		while (x < game->img.w)
 		{
-			mlx_pixel_put(game->mlx, game->win, x, y, game->data->floor);
+			mlx_pixel_put(game->mlx, game->win, x, y, game->config->floor_rgb);
 			x++;
 		}
 		y++;
