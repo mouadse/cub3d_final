@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:44:35 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 12:48:13 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:50:31 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ double	now_sec(void)
 {
 	// Warning:
 	// To be removed later and replaced with a low level function to get the time
+	// Since the use of this function is forbidden in the subject
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);

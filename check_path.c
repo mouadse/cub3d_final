@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:26:42 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/10 12:26:48 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:19:01 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	check_colors(t_config *config, char *line, char *temp);
 
-void	read_textures_path_aux(t_config *config, char *temp, char *line)
+void	parse_texture_file_path(t_config *config, char *temp, char *line)
 {
 	if (ft_strncmp("NO", temp, 2) == 0)
 		copy_texture_path(&(config->no_texture_path), temp, "NO", line);

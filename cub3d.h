@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 16:03:31 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:19:12 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ int				open_file(char *map_file);
 /* Data processing */
 void			data_processing(char *map_file, t_config *config);
 void			read_textures_path(t_config *config, char *temp, int fd);
-void			read_textures_path_aux(t_config *config, char *temp,
+void			parse_texture_file_path(t_config *config, char *temp,
 					char *line);
 
 /* Texture path processing */

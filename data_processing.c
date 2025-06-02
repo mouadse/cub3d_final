@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:31:51 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/10 12:31:52 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:19:15 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	read_textures_path(t_config *config, char *temp, int fd)
 		line = temp;
 		while (ft_isspace(*temp))
 			temp++;
-		read_textures_path_aux(config, temp, line);
+		parse_texture_file_path(config, temp, line);
 		free(line);
 		if (config->no_texture_path && config->so_texture_path
 			&& config->we_texture_path && config->ea_texture_path
