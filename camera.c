@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 17:53:28 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 12:09:03 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:46:39 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	init_player_camera(t_cub3d *game)
 
 void	set_player_position_and_plane(t_cub3d *game)
 {
-	
+
 	game->player_pos = create_vector(game->config->character_pos_x + 0.5,
 			game->config->character_pos_y + 0.5);
 	init_player_camera(game);
