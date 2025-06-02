@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cub3D Game Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>🎮 Cub3D Game Documentation</h1>
+        <p>Complete technical documentation for the Cub3D raycasting game engine</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#core-files">Core Files</a></li>
+            <li><a href="#validation">Validation</a></li>
+            <li><a href="#rendering">Rendering</a></li>
+            <li><a href="#player-controls">Player Controls</a></li>
+            <li><a href="#utilities">Utilities</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="overview">
+            <h2>📋 Project Overview</h2>
+            <div class="card">
+                <p>Cub3D is a 3D game engine inspired by the classic Wolfenstein 3D, implemented using raycasting techniques. The project demonstrates fundamental computer graphics concepts including:</p>
+                <ul>
+                    <li><strong>Raycasting:</strong> Creating 3D perspective from 2D maps</li>
+                    <li><strong>Texture mapping:</strong> Applying wall textures</li>
+                    <li><strong>Player movement:</strong> WASD controls and mouse look</li>
+                    <li><strong>Map parsing:</strong> Loading and validating .cub files</li>
+                    <li><strong>MLX graphics:</strong> Real-time rendering</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="core-files">
+            <h2>🗂️ Core System Files</h2>
+
+            <div class="file-group">
+                <h3>📁 main.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Entry point and game initialization</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">main()</span>
+                            <p>Initializes the game engine, sets up MLX window, configures hardcoded test map, loads textures, and starts the main game loop.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 cub3d.h</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Main header file containing all structures, constants, and function declarations</p>
+                    <div class="function-list">
+                        <h4>Key Structures:</h4>
+                        <div class="function">
+                            <span class="function-name">t_cub3d</span>
+                            <p>Main game structure containing MLX pointers, textures, player position, camera plane, and configuration.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">t_config</span>
+                            <p>Configuration structure for map data, texture paths, RGB colors, and player spawn information.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">t_dda</span>
+                            <p>DDA (Digital Differential Analyzer) structure for raycasting calculations.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">t_vec2</span>
+                            <p>2D vector structure for position and direction calculations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="validation">
+            <h2>✅ File Validation & Parsing</h2>
+
+            <div class="file-group">
+                <h3>📁 validation.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Main validation orchestrator for .cub files</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+
+                        <div class="function-detailed">
+                            <div class="function-header">
+                                <span class="function-name-detailed">validate_map()</span>
+                                <span class="function-type">Main Validator</span>
+                            </div>
+                            <div class="function-description">
+                                Central validation function that orchestrates the complete .cub file validation process, ensuring all components are valid before game initialization.
+                            </div>
+                            <div class="function-parameters">
+                                <h5>Parameters:</h5>
+                                <div class="parameter">
+                                    <span class="parameter-name">argc</span>
+                                    <span class="parameter-desc">Command line argument count</span>
+                                </div>
+                                <div class="parameter">
+                                    <span class="parameter-name">argv</span>
+                                    <span class="parameter-desc">Command line argument values (expects .cub file path)</span>
+                                </div>
+                                <div class="parameter">
+                                    <span class="parameter-name">game</span>
+                                    <span class="parameter-desc">Game structure to populate with validated data</span>
+                                </div>
+                            </div>
+                            <div class="algorithm-steps">
+                                <h5>Validation Pipeline:</h5>
+                                <ol>
+                                    <li>Validate command line arguments (exactly one .cub file)</li>
+                                    <li>Check file extension (.cub required)</li>
+                                    <li>Parse and validate file contents (textures, colors, map)</li>
+                                    <li>Initialize validation variables and structures</li>
+                                    <li>Process tab characters in map data</li>
+                                    <li>Analyze map content for player and valid characters</li>
+                                    <li>Verify map content meets game requirements</li>
+                                    <li>Ensure map is properly enclosed by walls</li>
+                                </ol>
+                            </div>
+                            <div class="pseudo-code">
+                                <h5>Validation Process:</h5>
+                                <pre>
+// Step 1: Basic argument validation
+check_arguments(argc)  // Must be exactly 2 arguments
+
+// Step 2: File format validation
+check_extension(argv[1])  // Must end with .cub
+
+// Step 3: Parse all file data
+process_map_file(argv[1], game.config)  // Load textures, colors, map
+
+// Step 4: Initialize validation state
+init_variables_valid(validator)
+
+// Step 5: Normalize map format
+found_tabs(game.config)  // Replace tabs with spaces
+
+// Step 6: Content analysis
+analyze_map_content(game.config, validator)  // Find player, count elements
+
+// Step 7: Content validation
+check_map_content(validator)  // Verify valid characters and player count
+
+// Step 8: Boundary validation
+surrounded_by_walls(game.config)  // Ensure proper enclosure
+                                </pre>
+                            </div>
+                            <div class="return-info">
+                                <h5>Exits on Error:</h5>
+                                <span class="return-value">Function exits program with error message if any validation fails</span>
+                            </div>
+                        </div>
+
+                        <div class="function">
+                            <span class="function-name">check_arguments()</span>
+                            <p>Validates command line arguments (exactly one .cub file required).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">check_extension()</span>
+                            <p>Ensures the input file has a .cub extension.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 check_path.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> File accessibility validation</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">check_path()</span>
+                            <p>Verifies that texture files exist and are readable.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">open_file()</span>
+                            <p>Safely opens files with error handling and returns file descriptor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 process_map_file.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Main data parsing coordinator</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">process_map_file()</span>
+                            <p>Orchestrates the complete file parsing process: texture paths, map size calculation, and content reading.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">read_textures_path()</span>
+                            <p>Parses texture file paths (NO, SO, WE, EA) and floor/ceiling colors (F, C).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">parse_texture_file_path()</span>
+                            <p>Helper function for texture path parsing with specific format validation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 check_rgb.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> RGB color validation and processing</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">check_rgb()</span>
+                            <p>Validates RGB color format (R,G,B) and converts to 32-bit color value.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">split_rgb()</span>
+                            <p>Splits RGB string into individual R, G, B components.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">convert_rgb()</span>
+                            <p>Converts individual RGB values to packed 32-bit color format.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 map.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Map data processing and analysis</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">count_map_size()</span>
+                            <p>Counts map lines and allocates memory for map grid.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">read_and_copy_map_content()</span>
+                            <p>Reads map lines from file and copies them to the grid structure.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">analyze_map_content()</span>
+                            <p>Analyzes map characters, finds player position, and validates content.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 map_utils.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Map utility functions</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">get_max_lines()</span>
+                            <p>Calculates the total number of rows in the map.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">get_max_columns()</span>
+                            <p>Finds the maximum width of any row in the map.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">check_map_content()</span>
+                            <p>Validates map content for invalid characters and player count.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">check_invalid_char()</span>
+                            <p>Checks if a character is valid for map content (0, 1, N, S, E, W, space).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 check_wall.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Map boundary validation</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">surrounded_by_walls()</span>
+                            <p>Ensures the map is properly enclosed by walls (no open boundaries).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">check_diagonals()</span>
+                            <p>Validates diagonal positions around empty spaces.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">check_sides()</span>
+                            <p>Validates cardinal direction positions around empty spaces.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 tabs.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Tab character handling in maps</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">found_tabs()</span>
+                            <p>Processes the entire map to replace tab characters with spaces.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">count_tabs()</span>
+                            <p>Counts tab characters in a line.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">replace_tabs()</span>
+                            <p>Replaces tab characters with equivalent spaces.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="rendering">
+            <h2>🎨 Rendering System</h2>
+
+            <div class="file-group">
+                <h3>📁 raycasting.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Core raycasting engine implementing DDA algorithm for 3D perspective rendering</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+
+                        <div class="function-detailed">
+                            <div class="function-header">
+                                <span class="function-name-detailed">perform_dda()</span>
+                                <span class="function-type">Core Algorithm</span>
+                            </div>
+                            <div class="function-description">
+                                Performs Digital Differential Analyzer (DDA) algorithm to trace rays through the map grid until hitting a wall. This is the heart of the raycasting engine that determines wall intersections and distances.
+                            </div>
+                            <div class="function-parameters">
+                                <h5>Parameters:</h5>
+                                <div class="parameter">
+                                    <span class="parameter-name">ray</span>
+                                    <span class="parameter-desc">DDA structure containing ray direction, position, and calculation data</span>
+                                </div>
+                                <div class="parameter">
+                                    <span class="parameter-name">map</span>
+                                    <span class="parameter-desc">2D character array representing the game map ('1' = wall, '0' = empty)</span>
+                                </div>
+                                <div class="parameter">
+                                    <span class="parameter-name">hit_side</span>
+                                    <span class="parameter-desc">Output parameter indicating which side of wall was hit (0=x-side, 1=y-side)</span>
+                                </div>
+                            </div>
+                            <div class="pseudo-code">
+                                <h5>Algorithm Steps:</h5>
+                                <pre>
+WHILE current_map_position is not a wall:
+    IF distance_to_next_x_gridline < distance_to_next_y_gridline:
+        // Step in X direction
+        distance_to_next_x += delta_distance_x
+        map_x += step_direction_x
+        hit_side = X_SIDE (0)
+    ELSE:
+        // Step in Y direction
+        distance_to_next_y += delta_distance_y
+        map_y += step_direction_y
+        hit_side = Y_SIDE (1)
+
+// Calculate perpendicular distance to avoid fisheye effect
+IF hit_side == X_SIDE:
+    perpendicular_distance = (distance_to_x - delta_distance_x)
+ELSE:
+    perpendicular_distance = (distance_to_y - delta_distance_y)
+                                </pre>
+                            </div>
+                            <div class="complexity-info">
+                                <h5>Complexity Analysis:</h5>
+                                <div class="complexity-item">
+                                    <span class="complexity-label">Time Complexity:</span>
+                                    <span class="complexity-value">O(max_distance)</span>
+                                </div>
+                                <div class="complexity-item">
+                                    <span class="complexity-label">Space Complexity:</span>
+                                    <span class="complexity-value">O(1)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="function-detailed">
+                            <div class="function-header">
+                                <span class="function-name-detailed">draw_rays()</span>
+                                <span class="function-type">Main Renderer</span>
+                            </div>
+                            <div class="function-description">
+                                Main rendering function that casts rays for each pixel column on screen, creating the 3D perspective view. Implements the fundamental raycasting loop that generates the entire 3D scene.
+                            </div>
+                            <div class="function-parameters">
+                                <h5>Parameters:</h5>
+                                <div class="parameter">
+                                    <span class="parameter-name">game</span>
+                                    <span class="parameter-desc">Main game structure containing player position, camera plane, and scene data</span>
+                                </div>
+                            </div>
+                            <div class="pseudo-code">
+                                <h5>Rendering Algorithm:</h5>
+                                <pre>
+FOR each pixel column from 0 to SCREEN_WIDTH:
+    // Calculate ray direction for this screen column
+    camera_x = 2 * pixel / SCREEN_WIDTH - 1  // [-1 to 1]
+    ray_direction = player_direction + camera_plane * camera_x
+
+    // Initialize ray starting position
+    map_x = floor(player_x)
+    map_y = floor(player_y)
+
+    // Calculate step sizes and initial distances
+    delta_distance = calculate_delta_distances(ray_direction)
+    initialize_side_distances(ray, player_position)
+
+    // Perform DDA to find wall intersection
+    perform_dda(ray, map, hit_side)
+
+    // Draw the wall slice for this pixel column
+    draw_wall_slice(ray, game, pixel)
+                                </pre>
+                            </div>
+                            <div class="algorithm-steps">
+                                <h5>Implementation Steps:</h5>
+                                <ol>
+                                    <li>Calculate camera space coordinates for current pixel column</li>
+                                    <li>Transform camera coordinates to world space ray direction</li>
+                                    <li>Initialize DDA variables (map position, step directions, distances)</li>
+                                    <li>Execute DDA algorithm to find nearest wall intersection</li>
+                                    <li>Calculate wall height based on perpendicular distance</li>
+                                    <li>Render textured wall slice to screen buffer</li>
+                                </ol>
+                            </div>
+                            <div class="complexity-info">
+                                <h5>Performance Metrics:</h5>
+                                <div class="complexity-item">
+                                    <span class="complexity-label">Per Frame:</span>
+                                    <span class="complexity-value">O(SCREEN_WIDTH * avg_ray_length)</span>
+                                </div>
+                                <div class="complexity-item">
+                                    <span class="complexity-label">Typical Performance:</span>
+                                    <span class="complexity-value">~60 FPS at 800x600</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 raycasting_utils.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Mathematical utilities for raycasting</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">calc_delta_dist()</span>
+                            <p>Calculates distance between grid lines for each ray direction component.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">init_side_dist()</span>
+                            <p>Initializes distances to next grid lines and step directions.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">sign_of()</span>
+                            <p>Returns the sign of a floating-point number (-1 or 1).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 wall_utils.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Wall rendering and texture mapping</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">draw_wall()</span>
+                            <p>Main wall rendering function that handles texture mapping and vertical line drawing.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">get_wall_texture()</span>
+                            <p>Determines which texture to use based on wall face direction (N/S/E/W).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">intersection_point()</span>
+                            <p>Calculates the exact hit point on the wall for texture mapping.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">find_texture_position_x()</span>
+                            <p>Determines the X coordinate on the texture for current wall slice.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">render_wall()</span>
+                            <p>Renders a vertical wall slice with proper texture mapping.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 wall_rendering.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Wall rendering interface (delegates to wall_utils.c)</p>
+                    <div class="function-list">
+                        <h4>Note:</h4>
+                        <p>This file is intentionally minimal and serves as an interface. The actual wall rendering implementation is in wall_utils.c.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 textures.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Texture management and wall direction determination</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">set_wall()</span>
+                            <p>Determines which wall texture to use based on ray hit side and step direction.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 render_background.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Floor and ceiling rendering</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">draw_background()</span>
+                            <p>Renders floor and ceiling using configured RGB colors by directly placing pixels.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">draw_background2()</span>
+                            <p>Alternative background rendering implementation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 my_mlx_utils.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> MLX graphics utilities and texture handling</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">tex_pixel()</span>
+                            <p>Extracts a pixel color from a texture at given coordinates.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">init_image()</span>
+                            <p>Initializes MLX image structure with proper memory allocation.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">my_mlx_pixel_put()</span>
+                            <p>Places a pixel at specified coordinates with bounds checking.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">load_textures()</span>
+                            <p>Loads all wall textures from XPM files into memory.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">now_sec()</span>
+                            <p>Returns current time in seconds (used for frame timing).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="player-controls">
+            <h2>🎮 Player Controls & Camera</h2>
+
+            <div class="file-group">
+                <h3>📁 player_movement.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Player movement logic and collision detection</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+
+                        <div class="function-detailed">
+                            <div class="function-header">
+                                <span class="function-name-detailed">update_player_movement()</span>
+                                <span class="function-type">Movement Controller</span>
+                            </div>
+                            <div class="function-description">
+                                Main movement update function that processes keyboard input and updates player position with collision detection and smooth frame-rate independent movement.
+                            </div>
+                            <div class="pseudo-code">
+                                <h5>Movement Algorithm:</h5>
+                                <pre>
+// Calculate frame-dependent movement speed
+movement_speed = frame_time * BASE_SPEED_4.0
+
+// Initialize target position
+target_x = current_player_x
+target_y = current_player_y
+
+// Process WASD input
+IF W_key_pressed:
+    target_x += player_direction_x * movement_speed
+    target_y += player_direction_y * movement_speed
+
+IF S_key_pressed:
+    target_x -= player_direction_x * movement_speed
+    target_y -= player_direction_y * movement_speed
+
+IF A_key_pressed:  // Strafe left
+    target_x -= camera_plane_x * movement_speed
+    target_y -= camera_plane_y * movement_speed
+
+IF D_key_pressed:  // Strafe right
+    target_x += camera_plane_x * movement_speed
+    target_y += camera_plane_y * movement_speed
+
+// Apply movement only if target position is walkable
+IF is_walkable(target_x, target_y):
+    player_position = target_position
+                                </pre>
+                            </div>
+                            <div class="complexity-info">
+                                <h5>Performance:</h5>
+                                <div class="complexity-item">
+                                    <span class="complexity-label">Collision Checks:</span>
+                                    <span class="complexity-value">O(1) per frame</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="function-detailed">
+                            <div class="function-header">
+                                <span class="function-name-detailed">is_walkable()</span>
+                                <span class="function-type">Collision Detection</span>
+                            </div>
+                            <div class="function-description">
+                                Advanced collision detection function using safety margins to prevent clipping through walls. Checks multiple points around the player's position to ensure smooth movement.
+                            </div>
+                            <div class="function-parameters">
+                                <h5>Parameters:</h5>
+                                <div class="parameter">
+                                    <span class="parameter-name">game</span>
+                                    <span class="parameter-desc">Game structure containing map data and player position</span>
+                                </div>
+                                <div class="parameter">
+                                    <span class="parameter-name">x, y</span>
+                                    <span class="parameter-desc">Target coordinates to check for walkability</span>
+                                </div>
+                            </div>
+                            <div class="pseudo-code">
+                                <h5>Collision Detection Algorithm:</h5>
+                                <pre>
+safety_margin = 0.1  // Prevent getting too close to walls
+
+// Check collision in movement direction
+IF map[floor(y + margin * sign(y - player_y))][floor(x)] == WALL:
+    RETURN false
+
+IF map[floor(y)][floor(x + margin * sign(x - player_x))] == WALL:
+    RETURN false
+
+// Check collision with camera plane direction
+IF map[floor(y + margin * sign(camera_plane_y))][floor(x)] == WALL:
+    RETURN false
+
+IF map[floor(y)][floor(x + margin * sign(camera_plane_x))] == WALL:
+    RETURN false
+
+RETURN true  // Position is safe to move to
+                                </pre>
+                            </div>
+                            <div class="algorithm-steps">
+                                <h5>Safety Checks:</h5>
+                                <ol>
+                                    <li>Check wall collision in primary movement direction</li>
+                                    <li>Check wall collision in secondary movement direction</li>
+                                    <li>Check wall collision considering camera plane orientation</li>
+                                    <li>Apply safety margin to prevent wall clipping</li>
+                                </ol>
+                            </div>
+                            <div class="return-info">
+                                <h5>Returns:</h5>
+                                <span class="return-value">true if position is safe, false if collision detected</span>
+                            </div>
+                        </div>
+
+                        <div class="function-detailed">
+                            <div class="function-header">
+                                <span class="function-name-detailed">compute_target_position()</span>
+                                <span class="function-type">Position Calculator</span>
+                            </div>
+                            <div class="function-description">
+                                Calculates the target position based on current input states, handling both forward/backward movement and strafing with proper vector mathematics.
+                            </div>
+                            <div class="pseudo-code">
+                                <h5>Target Position Calculation:</h5>
+                                <pre>
+movement_speed = frame_time * 4.0  // Frame-independent speed
+
+target_x = player_current_x
+target_y = player_current_y
+
+// Forward/Backward movement (using player direction vector)
+IF keys.w (forward):
+    target_x += player_direction.x * movement_speed
+    target_y += player_direction.y * movement_speed
+
+IF keys.s (backward):
+    target_x -= player_direction.x * movement_speed
+    target_y -= player_direction.y * movement_speed
+
+// Strafing movement (using camera plane vector)
+IF keys.a (strafe left):
+    target_x -= camera_plane.x * movement_speed
+    target_y -= camera_plane.y * movement_speed
+
+IF keys.d (strafe right):
+    target_x += camera_plane.x * movement_speed
+    target_y += camera_plane.y * movement_speed
+
+output_x = target_x
+output_y = target_y
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 camera.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Camera and player orientation management</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">init_player_camera()</span>
+                            <p>Initializes player direction and camera plane based on spawn orientation (N/S/E/W).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">set_player_position_and_plane()</span>
+                            <p>Sets initial player position from map data and configures camera.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 event_hooks.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Input handling and event processing</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">key_press()</span>
+                            <p>Handles key press events for movement (WASD) and rotation (arrow keys).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">key_release()</span>
+                            <p>Handles key release events to stop movement.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">close_window()</span>
+                            <p>Handles window close events and cleanup.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 game_loop.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> Main game loop and frame management</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">game_loop()</span>
+                            <p>Main game loop that handles frame timing, updates movement, renders background and walls, and displays the frame.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-group">
+                <h3>📁 vector_ops.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> 2D vector mathematics for movement and rotation</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">create_vector()</span>
+                            <p>Creates a 2D vector from X and Y coordinates.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">vector_add()</span>
+                            <p>Adds two vectors component-wise.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">vector_subtract()</span>
+                            <p>Subtracts one vector from another.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">vector_multiply()</span>
+                            <p>Multiplies a vector by a scalar value.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">vector_magnitude()</span>
+                            <p>Calculates the magnitude (length) of a vector.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">rotate_vector()</span>
+                            <p>Rotates a vector by a given angle using rotation matrix mathematics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="utilities">
+            <h2>🔧 Utility Functions</h2>
+
+            <div class="file-group">
+                <h3>📁 utils.c</h3>
+                <div class="card">
+                    <p><strong>Purpose:</strong> General utility functions and memory management</p>
+                    <div class="function-list">
+                        <h4>Functions:</h4>
+                        <div class="function">
+                            <span class="function-name">ft_isspace()</span>
+                            <p>Checks if a character is a whitespace character.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">init_variables_valid()</span>
+                            <p>Initializes validation structure variables.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">get_game()</span>
+                            <p>Singleton pattern implementation for game instance management.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">handle_error()</span>
+                            <p>Error handling function that displays error messages and exits cleanly.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">open_file()</span>
+                            <p>Safely opens files with comprehensive error handling.</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">ft_free_matrix()</span>
+                            <p>Safely deallocates 2D string arrays (matrices).</p>
+                        </div>
+                        <div class="function">
+                            <span class="function-name">free_memory()</span>
+                            <p>Comprehensive memory cleanup for all allocated game structures.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="build-info">
+            <h2>🔨 Build Information</h2>
+            <div class="card">
+                <h3>Makefile</h3>
+                <p><strong>Purpose:</strong> Build system configuration</p>
+                <ul>
+                    <li><strong>Compiler:</strong> cc (GCC)</li>
+                    <li><strong>Flags:</strong> -Wall -Wextra (strict compilation)</li>
+                    <li><strong>Libraries:</strong> MLX, X11, math library</li>
+                    <li><strong>Dependencies:</strong> libft (custom C library), get_next_line</li>
+                </ul>
+                <h4>Key Source Files Compiled:</h4>
+                <div class="source-list">
+                    <p>main.c, validation.c, check_path.c, data_processing.c, check_rgb.c, check_wall.c, map.c, map_utils.c, tabs.c, utils.c, vector_ops.c, camera.c, my_mlx_utils.c, textures.c, render_background.c, raycasting.c, raycasting_utils.c, wall_utils.c, wall_rendering.c, player_movement.c, event_hooks.c, game_loop.c</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture">
+            <h2>🏗️ Architecture Overview</h2>
+            <div class="card">
+                <h3>System Flow</h3>
+                <ol>
+                    <li><strong>Initialization:</strong> Parse .cub file, validate map, load textures</li>
+                    <li><strong>Setup:</strong> Initialize MLX window, player position, camera orientation</li>
+                    <li><strong>Game Loop:</strong>
+                        <ul>
+                            <li>Process input (movement, rotation)</li>
+                            <li>Update player position with collision detection</li>
+                            <li>Cast rays for each screen column</li>
+                            <li>Render background (floor/ceiling)</li>
+                            <li>Render walls with texture mapping</li>
+                            <li>Display frame</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h3>Key Algorithms</h3>
+                <ul>
+                    <li><strong>DDA Raycasting:</strong> Efficient grid traversal for wall detection</li>
+                    <li><strong>Texture Mapping:</strong> UV coordinate calculation for wall textures</li>
+                    <li><strong>Collision Detection:</strong> Margin-based movement validation</li>
+                    <li><strong>Vector Mathematics:</strong> 2D transformations for movement and rotation</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>📚 Cub3D Documentation - Complete Technical Reference</p>
+        <p>Generated for educational and development purposes</p>
+    </footer>
+</body>
+</html>
