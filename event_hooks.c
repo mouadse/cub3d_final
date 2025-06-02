@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 16:10:19 by msennane          #+#    #+#             */
-/*   Updated: 2025/05/07 16:35:58 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:12:14 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,27 +59,22 @@ int	close_window(t_cub3d *game)
 }
 
 // Main game loop - updates and renders each frame
-int game_loop(t_cub3d *game)
+int	game_loop(t_cub3d *game)
 {
-    double current_time;
-    static double last_time;
+	double			current_time;
+	static double	last_time;
 
-    // Calculate frame time for smooth movement
-    current_time = now_sec();
-    game->frame_time = current_time - last_time;
-    last_time = current_time;
-
-    // Update player position based on key inputs
-    update_player_movement(game);
-
-    // Draw the background (floor and ceiling)
-    draw_background2(game);
-
-    // Cast rays and render walls
-    draw_rays(game);
-
-    // Put the rendered image to the window
-    mlx_put_image_to_window(game->mlx, game->win, game->img.ptr, 0, 0);
-
-    return (0);
+	// Calculate frame time for smooth movement
+	current_time = now_sec();
+	game->frame_time = current_time - last_time;
+	last_time = current_time;
+	// Update player position based on key inputs
+	update_player_movement(game);
+	// Draw the background (floor and ceiling)
+	draw_background2(game);
+	// Cast rays and render walls
+	draw_rays(game);
+	// Put the rendered image to the window
+	mlx_put_image_to_window(game->mlx, game->win, game->img.ptr, 0, 0);
+	return (0);
 }
