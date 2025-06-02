@@ -138,7 +138,7 @@ check_arguments(argc)  // Must be exactly 2 arguments
 check_extension(argv[1])  // Must end with .cub
 
 // Step 3: Parse all file data
-data_processing(argv[1], game.config)  // Load textures, colors, map
+process_map_file(argv[1], game.config)  // Load textures, colors, map
 
 // Step 4: Initialize validation state
 init_variables_valid(validator)
@@ -193,13 +193,13 @@ surrounded_by_walls(game.config)  // Ensure proper enclosure
             </div>
 
             <div class="file-group">
-                <h3>📁 data_processing.c</h3>
+                <h3>📁 process_map_file.c</h3>
                 <div class="card">
                     <p><strong>Purpose:</strong> Main data parsing coordinator</p>
                     <div class="function-list">
                         <h4>Functions:</h4>
                         <div class="function">
-                            <span class="function-name">data_processing()</span>
+                            <span class="function-name">process_map_file()</span>
                             <p>Orchestrates the complete file parsing process: texture paths, map size calculation, and content reading.</p>
                         </div>
                         <div class="function">

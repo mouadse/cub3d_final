@@ -6,13 +6,13 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:31:51 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 17:19:15 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:45:54 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	data_processing(char *map_file, t_config *config)
+void	process_map_file(char *map_file, t_config *config)
 {
 	char	*temp;
 	int		fd;

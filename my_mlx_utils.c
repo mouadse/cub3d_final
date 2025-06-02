@@ -6,12 +6,12 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:44:35 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 16:50:31 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:43:11 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <sys/time.h>
+#include <sys/time.h> // This line will need to be removed later
 
 uint32_t	tex_pixel(t_tex *t, int x, int y)
 {

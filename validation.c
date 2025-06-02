@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:32:18 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 16:58:04 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/02 18:04:48 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	validate_map(int argc, char **argv, t_cub3d *game)
 
 	check_arguments(argc);
 	check_extension(argv[1]);
-	data_processing(argv[1], game->config);
+	process_map_file(argv[1], game->config);
 	init_variables_valid(&validator);
 	found_tabs(game->config);
 	analyze_map_content(game->config, &validator);
