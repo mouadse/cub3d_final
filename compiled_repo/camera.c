@@ -11,9 +11,10 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
 void	init_player_camera(t_cub3d *game)
 {
-	char orientation;
+	char	orientation;
 
 	orientation = game->config->character_orientation;
 	if (orientation == 'N')
@@ -40,10 +41,7 @@ void	init_player_camera(t_cub3d *game)
 
 void	set_player_position_and_plane(t_cub3d *game)
 {
-	game->player_pos = create_vector(
-		(float)game->config->character_pos_x + 0.5f,
-		(float)game->config->character_pos_y + 0.5f
-		);
-
+	game->player_pos = create_vector((float)game->config->character_pos_x
+			+ 0.5f, (float)game->config->character_pos_y + 0.5f);
 	init_player_camera(game);
 }

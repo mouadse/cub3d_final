@@ -6,21 +6,29 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:27:53 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 20:43:16 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/03 12:43:04 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO: Propagated game pointer for handle_error
 #include "cub3d.h"
+
 static int	has_valid_neighbors(t_config *config, int row, int col)
 {
-	if (row <= 0 || row >= config->grid_rows - 1 || \
-		col <= 0 || col >= config->grid_cols -1)
-		return (0);
+	int	current_line_len;
 
-	if (config->grid[row][col + 1] == ' ' || \
-		config->grid[row][col - 1] == ' ' || \
-		config->grid[row + 1][col] == ' ' || \
-		config->grid[row - 1][col] == ' ')
+	if (row <= 0 || row >= config->grid_rows - 1 || col <= 0)
+		return (0);
+	current_line_len = ft_strlen(config->grid[row]);
+	if (col >= current_line_len - 1)
+		return (0);
+	if (col + 1 >= (int)ft_strlen(config->grid[row])
+		|| col >= (int)ft_strlen(config->grid[row + 1])
+		|| col >= (int)ft_strlen(config->grid[row - 1]))
+		return (0);
+	if (config->grid[row][col + 1] == ' ' || config->grid[row][col - 1] == ' '
+		|| config->grid[row + 1][col] == ' ' || config->grid[row
+		- 1][col] == ' ')
 		return (0);
 	return (1);
 }
@@ -28,11 +36,12 @@ static int	has_valid_neighbors(t_config *config, int row, int col)
 static int	validate_map_cell_rules(t_config *config, int row, int col)
 {
 	char	cell_char;
+	int		current_line_len;
 
 	cell_char = config->grid[row][col];
-
-	if (row == 0 || row == config->grid_rows - 1 || \
-		col == 0 || col == config->grid_cols - 1)
+	current_line_len = ft_strlen(config->grid[row]);
+	if (row == 0 || row == config->grid_rows - 1 || col == 0
+		|| col == current_line_len - 1)
 	{
 		if (cell_char != '1' && cell_char != ' ' && cell_char != '2')
 			return (0);
@@ -54,7 +63,8 @@ static int	is_map_structurally_sound(t_config *config)
 	while (row_idx < config->grid_rows)
 	{
 		col_idx = 0;
-		while (col_idx < config->grid_cols && config->grid[row_idx][col_idx])
+		while (col_idx < (int)ft_strlen(config->grid[row_idx])
+			&& config->grid[row_idx][col_idx])
 		{
 			if (!validate_map_cell_rules(config, row_idx, col_idx))
 				return (0);
@@ -70,8 +80,8 @@ int	is_map_enclosed(t_config *config)
 	return (is_map_structurally_sound(config));
 }
 
-void	surrounded_by_walls(t_config *config)
+void	surrounded_by_walls(t_cub3d *game, t_config *config)
 {
 	if (!is_map_enclosed(config))
-		handle_error("Error: Map is not correctly enclosed by walls or has invalid bordering characters.\n");
+		handle_error("Error: Map is not correctly enclosed by walls or has invalid bordering characters.\n", game);
 }

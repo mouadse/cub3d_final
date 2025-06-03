@@ -6,13 +6,12 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:29:34 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 20:37:44 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/03 12:44:55 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "cub3d.h"
+
 int	count_tabs(char *line)
 {
 	int	i;
@@ -39,8 +38,7 @@ void	found_tabs(t_config *config)
 
 	i = 0;
 	if (!config || !config->grid)
-		return;
-
+		return ;
 	while (config->grid[i])
 	{
 		num_tabs = count_tabs(config->grid[i]);
@@ -51,8 +49,8 @@ void	found_tabs(t_config *config)
 			if (!config->grid[i])
 			{
 				config->grid[i] = original_line_ptr;
-				handle_error("Error: Failed to replace tabs in map line (memory allocation issue).\n");
-				return;
+				handle_error(MEM_ERR, NULL);
+				return ;
 			}
 			free(original_line_ptr);
 		}
@@ -60,30 +58,36 @@ void	found_tabs(t_config *config)
 	}
 }
 
+static void	replace_single_tab(char *replaced_line, int *new_idx, int tab_width)
+{
+	int	space_idx;
+
+	space_idx = 0;
+	while (space_idx < tab_width)
+	{
+		replaced_line[(*new_idx)++] = ' ';
+		space_idx++;
+	}
+}
+
 char	*replace_tabs(char *line, int num_tabs)
 {
-	char	*replaced_line;
-	int		original_idx;
-	int		new_idx;
-	int		space_idx;
-	const int tab_width = 4;
+	char		*replaced_line;
+	int			original_idx;
+	int			new_idx;
+	const int	tab_width = 4;
 
 	original_idx = 0;
 	new_idx = 0;
-	replaced_line = ft_calloc(sizeof(char), (ft_strlen(line) - num_tabs + (num_tabs * tab_width) + 1));
+	replaced_line = ft_calloc(sizeof(char), (ft_strlen(line) - num_tabs
+				+ (num_tabs * tab_width) + 1));
 	if (!replaced_line)
 		return (NULL);
-
 	while (line[original_idx])
 	{
 		if (line[original_idx] == '\t')
 		{
-			space_idx = 0;
-			while (space_idx < tab_width)
-			{
-				replaced_line[new_idx++] = ' ';
-				space_idx++;
-			}
+			replace_single_tab(replaced_line, &new_idx, tab_width);
 			original_idx++;
 		}
 		else

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
 // This file is intentionally left minimal.
 // The wall rendering implementation is in wall_utils.c
-
-

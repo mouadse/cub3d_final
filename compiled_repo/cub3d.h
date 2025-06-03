@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 19:56:26 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/03 15:27:36 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@
 # define ERR_INVALID_EXTENSION "Error: invalid .cub file.\n"
 # define ERR_INVALID_CHARACTER "Error: bad character in map.\n"
 # define ERR_PLAYER_COUNT "Error: one player required.\n"
+#define MEM_ERR "Error: Failed to replace tabs in map line (memory allocation issue).\n"
+#define ERR_MISSING_TEXTURES "Error: Missing one or more texture/color definitions in the map file.\n"
+#define MLX_ADDR_ERR "Error: mlx_get_data_addr failed for texture: "
+#define LOAD_TEXTURES_INIT_ERROR_MSG "Error: Game, config, or MLX instance not initialized before loading textures.\n"
 
 # define PI 3.141592653589793
 # define TEX_WIDTH 64
@@ -90,6 +94,41 @@ typedef struct s_config
 	int			character_pos_x;
 	int			character_pos_y;
 }				t_config;
+
+// Arguments for texture path parsing helper functions
+typedef struct s_texture_args
+{
+	char		**target_texture_path_ptr;
+	char		*line_content_start;
+	const char	*identifier;
+	char		*original_line;
+}				t_texture_args;
+
+// Arguments for RGB parsing helper functions
+typedef struct s_rgb_parse_args
+{
+	uint32_t	*target_color_value;
+	char		*rgb_values_str;
+	char		*original_line;
+	char		identifier_char;
+}				t_rgb_parse_args;
+
+// Arguments for the main check_rgb function
+typedef struct s_rgb_params
+{
+	uint32_t	*target_color_value;
+	char		*line_content_start;
+	char		*original_line;
+	char		identifier_char;
+	bool		*processed_flag;
+}				t_rgb_params;
+
+// Context for error handling during RGB component parsing
+typedef struct s_rgb_error_context
+{
+	char		*original_line;
+	char		**all_components_array; // For freeing in handle_rgb_parsing_error
+}				t_rgb_error_context;
 
 typedef struct s_wall_slice
 {
@@ -157,52 +196,49 @@ typedef struct s_cub3d
 	t_keys		keys;
 	t_img		img;
 	t_config	*config;
-	bool		exit_requested; // Flag for graceful shutdown
+	bool		exit_requested;
+	float	lerp_factor;
 }				t_cub3d;
 
 /* File handling and validation */
 void			validate_map(int argc, char **argv, t_cub3d *game);
-void			check_arguments(int argc);
-void			check_extension(char *map_file);
+void			check_arguments(t_cub3d *game, int argc);
+void			check_extension(t_cub3d *game, char *map_file);
 int				check_path(char *path);
-int				open_file(char *map_file);
+// int				open_file(char *map_file);
+int	open_file(char *map_file, t_cub3d *game);
 
 /* Data processing */
-void			process_map_file(char *map_file, t_config *config);
-void			read_textures_path(t_config *config, char *temp, int fd);
-void			parse_texture_file_path(t_config *config, char *temp,
-					char *line);
+void			process_map_file(t_cub3d *game, char *map_file);
+void			read_textures_path(t_cub3d *game, int fd);
+void			parse_texture_file_path(t_cub3d *game, t_config *config, char *trimmed_line_start, char *original_line);
 
 /* Texture path processing */
-void			copy_texture_path(char **texture, char *path, const char *mode,
-					char *line, bool *processed_flag);
+void			copy_texture_path(t_cub3d *game, const t_texture_args *args, bool *processed_flag);
 void			trim_newline(char *str, char *line);
 void			check_spaces(char *temp, char *mode, char *line);
-void			check_spaces_after_identifier(char *line_content_start, const char *identifier, char *original_line);
-void			trim_trailing_whitespace_or_newline(char *str, char *original_line);
+void			check_spaces_after_identifier(t_cub3d *game, char *line_content_start, const char *identifier, char *original_line);
+void			trim_trailing_whitespace_or_newline(t_cub3d *game, char *str, char *original_line);
 
 /* RGB color processing */
-void			check_rgb(uint32_t *color, char *rgb_color, char *original,
-					char c, bool *processed_flag);
+void			check_rgb(t_cub3d *game, t_rgb_params *params);
 void			split_rgb(char ***rgb, char *rgb_color, char *original, char c);
 uint32_t		convert_rgb(int r, int g, int b);
 
 /* Wall validation */
 bool			check_diagonals(t_config *config, int line, int col);
 bool			check_sides(t_config *config, int line, int col);
-void			surrounded_by_walls(t_config *config);
+void			surrounded_by_walls(t_cub3d *game, t_config *config);
 
 /* Map processing */
-// void			count_map_size(t_config *config, char *temp, int fd); // Old signature
-void			count_map_size(t_config *config, char *map_file_path); // New signature from map.c patch
-// void			read_and_copy_map_content(char *temp, int fd); // Old signature
-void			read_and_copy_map_content(int fd); // New signature from map.c patch
+void			count_map_size(t_cub3d *game, char *map_file_path);
+void			read_and_copy_map_content(t_cub3d *game, int fd);
 void			analyze_map_content(t_config *config, t_validator *validator);
 
 /* Map utility functions */
 void			get_max_lines(t_config *config);
 void			get_max_columns(t_config *config);
-void			check_map_content(t_validator *validator);
+void			check_map_content(t_cub3d *game, t_validator *validator);
 int				check_invalid_char(char c);
 
 /* Tab handling */
@@ -213,13 +249,12 @@ char			*replace_tabs(char *line, int tabs);
 /* Memory and error handling */
 void			free_memory(t_cub3d *game); // Signature is fine (takes pointer)
 // t_cub3d			*get_game(t_cub3d *game); // Old signature
-t_cub3d			*get_game(void); // New signature
-void			init_game_instance(t_cub3d *game_ptr); // New function
-void			handle_error(char *message) __attribute__((noreturn));
+void			handle_error(char *message, t_cub3d *game);
 void			init_variables_valid(t_validator *validator);
 
 /* File reading utilities */
 char			*get_next_line(int fd);
+void			cleanup_get_next_line(void);
 void			ft_free_matrix(char **matrix);
 
 /* String utilities */
@@ -261,6 +296,8 @@ uint32_t		tex_pixel(t_tex *t, int x, int y);
 void			init_image(t_cub3d *g, int w, int h);
 void			my_mlx_pixel_put(t_img *img, int x, int y, uint32_t col);
 void			load_textures(t_cub3d *game);
+t_tex			*init_texture_data(void);
+t_tex			*load_xpm(void *mlx, char *file);
 
 // Add hooks for close, loop, and input events
 int				close_window(t_cub3d *game);

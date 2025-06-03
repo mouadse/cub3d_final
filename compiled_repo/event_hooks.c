@@ -63,11 +63,8 @@ int	game_loop(t_cub3d *game)
 		free_memory(game);
 		exit(0);
 	}
-
-	#define FIXED_FRAME_TIME 0.016f
-
+#define FIXED_FRAME_TIME 0.016f
 	game->frame_time = FIXED_FRAME_TIME;
-
 	update_player_movement(game);
 	draw_background2(game);
 	draw_rays(game);

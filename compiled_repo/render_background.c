@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "cub3d.h"
+
 void	draw_background(t_cub3d *game)
 {
 	int	x;
@@ -44,7 +44,6 @@ void	draw_background(t_cub3d *game)
 void	draw_background2(t_cub3d *game)
 {
 	int x, y;
-
 	y = 0;
 	while (y < game->img.h)
 	{

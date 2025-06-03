@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "cub3d.h" // Includes math.h for sqrt, cos, sin, M_PI if defined
+
 t_vec2	create_vector(float x, float y)
 {
 	t_vec2	new_vector;
@@ -59,8 +59,9 @@ t_vec2	rotate_vector(t_vec2 vector, float angle_degrees)
 	float	angle_radians;
 
 	angle_radians = angle_degrees * (PI / 180.0f);
-	rotated_vector.x = vector.x * cosf(angle_radians) - vector.y * sinf(angle_radians);
-	rotated_vector.y = vector.x * sinf(angle_radians) + vector.y * cosf(angle_radians);
-
+	rotated_vector.x = vector.x * cosf(angle_radians) - vector.y
+		* sinf(angle_radians);
+	rotated_vector.y = vector.x * sinf(angle_radians) + vector.y
+		* cosf(angle_radians);
 	return (rotated_vector);
 }

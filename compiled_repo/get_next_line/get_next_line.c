@@ -6,11 +6,14 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 01:08:01 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/09 13:07:18 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/03 12:45:44 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+static t_list	g_gnl_node;
+static int		g_gnl_initialized = 0;
 
 static void	free_queue(t_list *node)
 {
@@ -102,23 +105,30 @@ static char	*handle_cases(ssize_t bytes, t_list *node, char *rest, int *fd)
 
 char	*get_next_line(int fd)
 {
-	static t_list	node;
 	ssize_t			bytes;
 	char			*rest;
-	static int		flag = 0;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (flag == 0)
+	if (g_gnl_initialized == 0)
 	{
-		initialize_queue(&node);
-		flag = 1;
+		initialize_queue(&g_gnl_node);
+		g_gnl_initialized = 1;
 	}
-	if (!is_it_empty(&node) && has_new_line(&node))
-		return (extract_line(&node));
+	if (!is_it_empty(&g_gnl_node) && has_new_line(&g_gnl_node))
+		return (extract_line(&g_gnl_node));
 	rest = malloc(sizeof(char) * (BUFFER_SIZE));
 	if (!rest)
 		return (NULL);
 	bytes = read(fd, rest, BUFFER_SIZE);
-	return (handle_cases(bytes, &node, rest, &fd));
+	return (handle_cases(bytes, &g_gnl_node, rest, &fd));
+}
+
+void	cleanup_get_next_line(void)
+{
+	if (g_gnl_initialized == 1)
+	{
+		free_queue(&g_gnl_node);
+		g_gnl_initialized = 0;
+	}
 }

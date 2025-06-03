@@ -1,0 +1,164 @@
+event_hooks.c: Error!
+Error: PREPOC_ONLY_GLOBAL   (line:  66, col:   1):	Preprocessor statements are only allowed in the global scope
+Error: NL_AFTER_PREPROC     (line:  67, col:   1):	Preprocessor statement must be followed by a newline
+data_processing.c: Error!
+Error: LINE_TOO_LONG        (line:  28, col:  85):	line too long
+Error: LINE_TOO_LONG        (line:  45, col:  83):	line too long
+Error: LINE_TOO_LONG        (line:  60, col:  95):	line too long
+Error: TOO_MANY_LINES       (line:  62, col:   1):	Function has more than 25 lines
+main.c: Error!
+Error: TOO_MANY_LINES       (line:  57, col:   1):	Function has more than 25 lines
+vector_ops.c: Error!
+Error: TOO_MANY_FUNCS       (line:  56, col:   1):	Too many functions in file
+validation.c: OK!
+map.c: Error!
+Error: LINE_TOO_LONG        (line:  41, col:  83):	line too long
+Error: LINE_TOO_LONG        (line:  80, col: 122):	line too long
+Error: NO_SPC_BFR_OPR       (line:  81, col:  24):	extra space before operator
+Error: LINE_TOO_LONG        (line:  81, col:  26):	line too long
+Error: WRONG_SCOPE_COMMENT  (line:  81, col:  26):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line:  81, col:  26):	Comment is invalid in this scope
+Error: LINE_TOO_LONG        (line:  81, col:  82):	line too long
+Error: LINE_TOO_LONG        (line:  99, col:  86):	line too long
+Error: TOO_MANY_LINES       (line: 103, col:   1):	Function has more than 25 lines
+Error: LINE_TOO_LONG        (line: 115, col: 103):	line too long
+Error: LINE_TOO_LONG        (line: 123, col: 126):	line too long
+check_path.c: Error!
+Error: TOO_MANY_TAB         (line:  22, col:   1):	Extra tabs for indent level
+Error: SPACE_REPLACE_TAB    (line:  22, col:  13):	Found space when expecting tab
+Error: MISALIGNED_VAR_DECL  (line:  22, col:  14):	Misaligned variable declaration
+Error: DECL_ASSIGN_LINE     (line:  22, col:  29):	Declaration and assignation on a single line
+Error: LINE_TOO_LONG        (line:  54, col:  82):	line too long
+Error: LINE_TOO_LONG        (line: 102, col:  85):	line too long
+Error: TOO_MANY_LINES       (line: 106, col:   1):	Function has more than 25 lines
+Error: NO_SPC_BFR_OPR       (line: 132, col:  16):	extra space before operator
+Error: LINE_TOO_LONG        (line: 132, col:  18):	line too long
+Error: WRONG_SCOPE_COMMENT  (line: 132, col:  18):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line: 132, col:  18):	Comment is invalid in this scope
+Error: LINE_TOO_LONG        (line: 132, col:  86):	line too long
+Error: TOO_MANY_FUNCS       (line: 136, col:   1):	Too many functions in file
+Error: TOO_MANY_FUNCS       (line: 141, col:   1):	Too many functions in file
+Error: WRONG_SCOPE_VAR      (line: 157, col:   1):	Variable declared in incorrect scope
+Error: WRONG_SCOPE_VAR      (line: 168, col:   1):	Variable declared in incorrect scope
+Error: TOO_MANY_LINES       (line: 180, col:   1):	Function has more than 25 lines
+Error: TOO_MANY_FUNCS       (line: 182, col:   1):	Too many functions in file
+Error: WRONG_SCOPE_COMMENT  (line: 188, col:  19):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line: 188, col:  19):	Comment is invalid in this scope
+Error: LINE_TOO_LONG        (line: 206, col: 105):	line too long
+Error: TOO_MANY_FUNCS       (line: 211, col:   1):	Too many functions in file
+Error: LINE_TOO_LONG        (line: 226, col:  85):	line too long
+Error: TOO_MANY_FUNCS       (line: 230, col:   1):	Too many functions in file
+Error: LINE_TOO_LONG        (line: 241, col:  87):	line too long
+tabs.c: OK!
+player_movement.c: Error!
+Error: TOO_MANY_TAB         (line:  23, col:  17):	Extra tabs for indent level
+Error: TOO_MANY_TAB         (line:  29, col:  13):	Extra tabs for indent level
+Error: LINE_TOO_LONG        (line:  73, col:  82):	line too long
+Error: LINE_TOO_LONG        (line:  77, col:  82):	line too long
+wall_rendering.c: OK!
+check_rgb.c: Error!
+Error: DECL_ASSIGN_LINE     (line:  60, col:  15):	Declaration and assignation on a single line
+Error: TOO_MANY_LINES       (line:  86, col:   1):	Function has more than 25 lines
+Error: WRONG_SCOPE_COMMENT  (line: 125, col:  50):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line: 125, col:  50):	Comment is invalid in this scope
+Error: LINE_TOO_LONG        (line: 135, col:  82):	line too long
+Error: NO_SPC_BFR_OPR       (line: 137, col:  16):	extra space before operator
+Error: WRONG_SCOPE_COMMENT  (line: 137, col:  18):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line: 137, col:  18):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line: 141, col:  21):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line: 141, col:  21):	Comment is invalid in this scope
+Error: LINE_TOO_LONG        (line: 142, col:  82):	line too long
+Error: LINE_TOO_LONG        (line: 143, col:  62):	line too long
+Error: WRONG_SCOPE_COMMENT  (line: 143, col:  62):	Comment is invalid in this scope
+Error: LINE_TOO_LONG        (line: 143, col: 104):	line too long
+Error: TOO_MANY_LINES       (line: 148, col:   1):	Function has more than 25 lines
+Error: TOO_MANY_FUNCS       (line: 150, col:   1):	Too many functions in file
+Error: TOO_MANY_FUNCS       (line: 155, col:   1):	Too many functions in file
+check_wall.c: Error!
+Error: LINE_TOO_LONG        (line:  86, col: 108):	line too long
+cub3d.h: Error!
+Error: PREPROC_BAD_INDENT   (line:  32, col:   1):	Bad preprocessor indentation
+Error: LINE_TOO_LONG        (line:  32, col:  89):	line too long
+Error: LINE_TOO_LONG        (line: 126, col:  41):	line too long
+Error: LINE_TOO_LONG        (line: 126, col:  83):	line too long
+Error: MISALIGNED_VAR_DECL  (line: 196, col:  13):	Misaligned variable declaration
+Error: MISALIGNED_FUNC_DECL (line: 205, col:   5):	Misaligned function declaration
+Error: LINE_TOO_LONG        (line: 210, col:  98):	line too long
+Error: LINE_TOO_LONG        (line: 213, col:  82):	line too long
+Error: LINE_TOO_LONG        (line: 216, col:  86):	line too long
+Error: LINE_TOO_LONG        (line: 217, col:  83):	line too long
+Error: LINE_TOO_LONG        (line: 248, col:  83):	line too long
+my_mlx_utils.c: OK!
+wall_utils.c: OK!
+raycasting.c: OK!
+raycasting_utils.c: OK!
+textures.c: Error!
+Error: TOO_MANY_LINES       (line:  71, col:   1):	Function has more than 25 lines
+Error: LINE_TOO_LONG        (line:  77, col:  84):	line too long
+Error: TOO_MANY_TAB         (line:  78, col:   1):	Extra tabs for indent level
+camera.c: OK!
+utils.c: Error!
+Error: LINE_TOO_LONG        (line:  13, col:   1):	line too long
+Error: LINE_TOO_LONG        (line:  13, col:  93):	line too long
+Error: DECL_ASSIGN_LINE     (line:  45, col:  28):	Declaration and assignation on a single line
+Error: TOO_MANY_FUNCS       (line:  72, col:   1):	Too many functions in file
+Error: TOO_MANY_FUNCS       (line:  84, col:   1):	Too many functions in file
+Error: TOO_MANY_LINES       (line: 132, col:   1):	Function has more than 25 lines
+render_background.c: Error!
+Error: SPACE_REPLACE_TAB    (line:  46, col:   8):	Found space when expecting tab
+Error: MULT_DECL_LINE       (line:  46, col:  10):	Multiple declarations on a single line
+Error: NL_AFTER_VAR_DECL    (line:  47, col:   1):	Variable declarations must be followed by a newline
+map_utils.c: OK!
+get_next_line/get_next_line.h: OK!
+get_next_line/get_next_line.c: Error!
+Notice: GLOBAL_VAR_DETECTED  (line:  15, col:   1):	Global variable present in file. Make sure it is a reasonable choice.
+Notice: GLOBAL_VAR_DETECTED  (line:  16, col:   1):	Global variable present in file. Make sure it is a reasonable choice.
+Error: TOO_MANY_FUNCS       (line: 127, col:   1):	Too many functions in file
+get_next_line/get_next_line_utils.c: OK!
+libft/ft_isdigit.c: OK!
+libft/ft_bzero.c: OK!
+libft/ft_strjoin.c: OK!
+libft/ft_strrchr.c: OK!
+libft/ft_atoi.c: OK!
+libft/libft.h: OK!
+libft/ft_strcmp.c: OK!
+libft/ft_memcpy.c: OK!
+libft/ft_strlen.c: OK!
+libft/ft_toupper.c: OK!
+libft/ft_putchar_fd.c: OK!
+libft/ft_strdup.c: OK!
+libft/ft_lstsize_bonus.c: OK!
+libft/ft_strtrim.c: OK!
+libft/ft_memcmp.c: OK!
+libft/ft_itoa.c: OK!
+libft/ft_putendl_fd.c: OK!
+libft/ft_lstadd_back_bonus.c: OK!
+libft/ft_strmapi.c: OK!
+libft/ft_strlcat.c: OK!
+libft/ft_lstmap_bonus.c: OK!
+libft/ft_strnstr.c: OK!
+libft/ft_memchr.c: OK!
+libft/ft_tolower.c: OK!
+libft/ft_memmove.c: OK!
+libft/ft_putnbr_fd.c: OK!
+libft/ft_lstdelone_bonus.c: OK!
+libft/ft_strchr.c: OK!
+libft/ft_memset.c: OK!
+libft/ft_strncmp.c: OK!
+libft/ft_lstiter_bonus.c: OK!
+libft/ft_substr.c: OK!
+libft/ft_isascii.c: OK!
+libft/ft_putstr_fd.c: OK!
+libft/ft_lstclear_bonus.c: OK!
+libft/ft_lstadd_front_bonus.c: OK!
+libft/ft_isalpha.c: OK!
+libft/ft_isprint.c: OK!
+libft/ft_split.c: Error!
+Error: WRONG_SCOPE_COMMENT  (line:  17, col:   5):	Comment is invalid in this scope
+Error: WRONG_SCOPE_COMMENT  (line:  18, col:   5):	Comment is invalid in this scope
+libft/ft_calloc.c: OK!
+libft/ft_strlcpy.c: OK!
+libft/ft_striteri.c: OK!
+libft/ft_lstlast_bonus.c: OK!
+libft/ft_lstnew_bonus.c: OK!
+libft/ft_isalnum.c: OK!

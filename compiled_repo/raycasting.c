@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cub3d.h"
+
 static int	is_wall(char **map, int x, int y)
 {
 	if (y < 0 || x < 0 || !map[y] || !map[y][x])
@@ -48,14 +49,15 @@ void	perform_dda(t_dda *ray, char **map, int *hit_side)
 void	draw_rays(t_cub3d *game)
 {
 	t_dda	ray;
-	memset(&ray, 0, sizeof(t_dda));
 	int		pixel;
 
+	memset(&ray, 0, sizeof(t_dda));
 	pixel = 0;
 	while (pixel < SCREEN_WIDTH)
 	{
 		ray.plane_multiplier = 2.0f * pixel / (float)SCREEN_WIDTH - 1.0f;
-		ray.camera_pixel = vector_multiply(game->camera_plane, ray.plane_multiplier);
+		ray.camera_pixel = vector_multiply(game->camera_plane,
+				ray.plane_multiplier);
 		ray.dir = vector_add(game->player_dir, ray.camera_pixel);
 		ray.map.x = (int)game->player_pos.x;
 		ray.map.y = (int)game->player_pos.y;

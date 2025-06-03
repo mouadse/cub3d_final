@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 23:42:07 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/10 12:37:06 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/03 15:26:49 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 static int	is_separator(char c, char sep)
 {
-	return (c == sep || c == ' ' || c == '\t' || c == '\n' || c == '\f'
-		|| c == '\r' || c == '\v');
+	// return (c == sep || c == ' ' || c == '\t' || c == '\n' || c == '\f'
+	// 	|| c == '\r' || c == '\v');
+	return (c == sep);
 }
 
 static int	count_words(char const *s, char sep)

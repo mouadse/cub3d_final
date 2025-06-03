@@ -10,11 +10,11 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = cub3d
+NAME = cub3D
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra  -fsanitize=address -g3
+CFLAGS = -Wall -Wextra  #-fsanitize=leak,address,undefined -g3 -O3
 MLXFLAGS = -lmlx -lXext -lX11 -lm
 
 # Directories

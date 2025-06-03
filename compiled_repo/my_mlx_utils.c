@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO: Replaced exit() with handle_error() in init_image
 #include "cub3d.h"
 
 uint32_t	tex_pixel(t_tex *t, int x, int y)
@@ -27,8 +28,7 @@ void	init_image(t_cub3d *g, int w, int h)
 	g->img.ptr = mlx_new_image(g->mlx, w, h);
 	if (!g->img.ptr)
 	{
-		perror("mlx_new_image");
-		exit(EXIT_FAILURE);
+		handle_error("Error: mlx_new_image() failed in init_image\n", g);
 	}
 	g->img.addr = mlx_get_data_addr(g->img.ptr, &g->img.bpp, &g->img.line_len,
 			&g->img.endian);
@@ -41,8 +41,7 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, uint32_t col)
 	char	*dst;
 
 	if (x < 0 || x >= img->w || y < 0 || y >= img->h)
-		return;
-
+		return ;
 	dst = img->addr + (y * img->line_len + x * (img->bpp / 8));
 	*(uint32_t *)dst = col;
 }

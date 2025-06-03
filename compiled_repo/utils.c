@@ -6,11 +6,12 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:30:07 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 21:00:46 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/03 15:33:07 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include <stdio.h>
 
 int	ft_isspace(int c)
 {
@@ -24,30 +25,18 @@ void	init_variables_valid(t_validator *validator)
 	validator->player_count = 0;
 }
 
-static t_cub3d	*g_game_instance = NULL;
-
-void	init_game_instance(t_cub3d *game_ptr)
-{
-	if (g_game_instance == NULL && game_ptr != NULL)
-		g_game_instance = game_ptr;
-}
-
-t_cub3d	*get_game(void)
-{
-	return (g_game_instance);
-}
-
-void	handle_error(char *message)
+void	handle_error(char *message, t_cub3d *game)
 {
 	if (message)
 		ft_putstr_fd(message, STDERR_FILENO);
 	else
 		ft_putstr_fd("Error: An unknown error occurred.\n", STDERR_FILENO);
-	free_memory(get_game());
+	cleanup_get_next_line();
+	free_memory(game);
 	exit(EXIT_FAILURE);
 }
 
-int	open_file(char *map_file)
+int	open_file(char *map_file, t_cub3d *game)
 {
 	int		fd;
 	char	error_msg[100] = "Error: could not open file: ";
@@ -57,7 +46,7 @@ int	open_file(char *map_file)
 	{
 		ft_strlcat(error_msg, map_file, sizeof(error_msg));
 		ft_strlcat(error_msg, "\n", sizeof(error_msg));
-		handle_error(error_msg);
+		handle_error(error_msg, game);
 	}
 	return (fd);
 }
@@ -89,10 +78,8 @@ static void	free_single_texture(void *mlx_ptr, t_tex *texture)
 	}
 }
 
-void	free_memory(t_cub3d *game)
+static void	free_config_and_textures(t_cub3d *game)
 {
-	if (!game)
-		return;
 	if (game->config)
 	{
 		if (game->config->no_texture_path)
@@ -118,6 +105,13 @@ void	free_memory(t_cub3d *game)
 	game->west_texture = NULL;
 	game->east_texture = NULL;
 	game->texture = NULL;
+}
+
+void	free_memory(t_cub3d *game)
+{
+	if (!game)
+		return ;
+	free_config_and_textures(game);
 	if (game->img.ptr && game->mlx)
 	{
 		mlx_destroy_image(game->mlx, game->img.ptr);
@@ -128,19 +122,10 @@ void	free_memory(t_cub3d *game)
 		mlx_destroy_window(game->mlx, game->win);
 		game->win = NULL;
 	}
-	#ifdef __linux__
 	if (game->mlx)
 	{
 		mlx_destroy_display(game->mlx);
-	}
-	#endif
-	if (game->mlx)
-	{
 		free(game->mlx);
 		game->mlx = NULL;
-	}
-	if (g_game_instance == game)
-	{
-		g_game_instance = NULL;
 	}
 }
