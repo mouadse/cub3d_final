@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:29:10 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 20:40:37 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/04 14:03:10 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,32 @@ void	get_max_columns(t_config *config)
 			max_cols = current_cols;
 		i++;
 	}
+	config->grid_cols = max_cols;
+}
+
+void	get_max_columns_with_filepath(t_config *config, char *filepath)
+{
+	int	max_cols;
+	int	current_cols;
+	int	fd;
+	char	*line_content;
+
+	max_cols = 0;
+	if (!config || !filepath)
+		return ;
+	fd = open(filepath, O_RDONLY);
+	if (fd < 0)
+		return ;
+	line_content = get_next_line(fd);
+	while (line_content)
+	{
+		current_cols = ft_strlen(line_content);
+		if (current_cols > max_cols)
+			max_cols = current_cols;
+		free(line_content);
+		line_content = get_next_line(fd);
+	}
+	close(fd);
 	config->grid_cols = max_cols;
 }
 

@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:31:51 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/03 13:45:45 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/04 12:20:49 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,27 +43,54 @@ static void	process_texture_line(t_cub3d *game, char *line_content)
 			line_content);
 }
 
-void	read_textures_path(t_cub3d *game, int fd)
-{
-	char	*line_content;
+// void	read_textures_path(t_cub3d *game, int fd)
+// {
+// 	char	*line_content;
 
-	line_content = get_next_line(fd);
-	while (line_content)
-	{
-		process_texture_line(game, line_content);
-		free(line_content);
-		if (game->config->no_texture_path && game->config->so_texture_path
-			&& game->config->we_texture_path && game->config->ea_texture_path
-			&& game->config->textures_ready)
-			break ;
-		line_content = get_next_line(fd);
-	}
-	if (!(game->config->no_texture_path && game->config->so_texture_path
-			&& game->config->we_texture_path && game->config->ea_texture_path
-			&& game->config->textures_ready))
-	{
-		if (line_content)
-			free(line_content);
-		handle_error(ERR_MISSING_TEXTURES, game);
-	}
+// 	line_content = get_next_line(fd);
+// 	while (line_content)
+// 	{
+// 		process_texture_line(game, line_content);
+// 		free(line_content);
+// 		if (game->config->no_texture_path && game->config->so_texture_path
+// 			&& game->config->we_texture_path && game->config->ea_texture_path
+// 			&& game->config->textures_ready)
+// 			break ;
+// 		line_content = get_next_line(fd);
+// 	}
+// 	if (!(game->config->no_texture_path && game->config->so_texture_path
+// 			&& game->config->we_texture_path && game->config->ea_texture_path
+// 			&& game->config->textures_ready))
+// 	{
+// 		if (line_content)
+// 			free(line_content);
+// 		handle_error(ERR_MISSING_TEXTURES, game);
+// 	}
+// }
+
+
+void    read_textures_path(t_cub3d *game, int fd)
+{
+    char    *line_content;
+
+    line_content = get_next_line(fd);
+    while (line_content)
+    {
+        /* Configuration section ends where the map begins */
+        if (is_map_content_line(line_content))
+        {
+            free(line_content);          /* we will reopen the file later   */
+            break;                       /* exit the loop cleanly           */
+        }
+
+        process_texture_line(game, line_content);
+        free(line_content);
+        line_content = get_next_line(fd);
+    }
+
+    /* final sanity-check: do we have exactly one of each directive? */
+    if (!(game->config->no_texture_path && game->config->so_texture_path &&
+          game->config->we_texture_path && game->config->ea_texture_path &&
+          game->config->textures_ready))
+        handle_error(ERR_MISSING_TEXTURES, game);
 }

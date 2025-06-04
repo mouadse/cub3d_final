@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:28:43 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/03 13:32:54 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:27:35 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 static bool	process_map_line_content(t_cub3d *game, char *current_line_content,
 				int current_map_grid_index);
-
-static bool	is_map_content_line(char *line);
 
 void	count_map_size(t_cub3d *game, char *map_file_path)
 {
@@ -38,66 +36,79 @@ void	count_map_size(t_cub3d *game, char *map_file_path)
 		handle_error("Error: Map file is empty or could not be read.\n", game);
 	game->config->grid = ft_calloc(sizeof(char *), (total_lines_in_file + 1));
 	if (!game->config->grid)
-		handle_error("Error: Memory allocation failed for map grid (ft_calloc).\n", game);
+		handle_error("Error: Memory allocation failed for map grid (ft_calloc).\n",
+			game);
 	game->config->grid_rows = total_lines_in_file;
+}
+
+static void	skip_to_map_content(t_cub3d *game, int fd, char **current_line)
+{
+	*current_line = get_next_line(fd);
+	while (*current_line && !is_map_content_line(*current_line))
+	{
+		free(*current_line);
+		*current_line = get_next_line(fd);
+	}
+	if (!*current_line)
+	{
+		handle_error("Error: No map content found in file.\n", game);
+		return ;
+	}
+}
+
+static bool	process_map_line(t_cub3d *game, char *current_line,
+		bool *is_map_content_started, bool *is_map_content_ended,
+		int *current_grid_idx)
+{
+	if (current_line[0] == '\n')
+	{
+		if (*is_map_content_started)
+			*is_map_content_ended = true;
+	}
+	else
+	{
+		if (*is_map_content_ended)
+		{
+			free(current_line);
+			handle_error("Error: Map content found after an empty line separator,indicating invalid map structure.\n",
+				game);
+			return (false);
+		}
+		*is_map_content_started = true;
+		if (process_map_line_content(game, current_line, *current_grid_idx))
+		{
+			(*current_grid_idx)++;
+		}
+	}
+	return (true);
 }
 
 void	read_and_copy_map_content(t_cub3d *game, int fd)
 {
 	char	*current_line;
-	int		map_lines_processed_count;
 	int		current_grid_idx;
 	bool	is_map_content_started;
 	bool	is_map_content_ended;
 
-	current_line = get_next_line(fd);
-	while (current_line && !is_map_content_line(current_line))
-	{
-		free(current_line);
-		current_line = get_next_line(fd);
-	}
+	skip_to_map_content(game, fd, &current_line);
 	if (!current_line)
-	{
-		handle_error("Error: No map content found in file.\n", game);
 		return ;
-	}
-	map_lines_processed_count = 0;
 	current_grid_idx = 0;
 	is_map_content_started = false;
 	is_map_content_ended = false;
 	while (current_line)
 	{
-		if (current_line[0] == '\n')
-		{
-			if (is_map_content_started)
-				is_map_content_ended = true;
-		}
-		else
-		{
-			if (is_map_content_ended)
-			{
-				free(current_line);
-				handle_error("Error: Map content found after an empty line separator,indicating invalid map structure.\n", game);
-				return ; // This line never executes due to handle_error's exit()
-			}
-			is_map_content_started = true;
-			if (process_map_line_content(game, current_line, current_grid_idx))
-			{
-				current_grid_idx++;
-			}
-		}
-		map_lines_processed_count++;
+		if (!process_map_line(game, current_line, &is_map_content_started,
+				&is_map_content_ended, &current_grid_idx))
+			return ;
 		free(current_line);
 		current_line = get_next_line(fd);
 	}
 	if (game->config && game->config->grid)
-	{
 		game->config->grid[current_grid_idx] = NULL;
-	}
 	if (current_grid_idx == 0)
-	{
-		handle_error("Error: No valid map content found after texture definitions.\n", game);
-	}
+		handle_error("Error: No valid map content found after texture definitions.\n",
+			game);
 	if (game->config)
 		game->config->grid_rows = current_grid_idx;
 }
@@ -112,7 +123,8 @@ static bool	process_map_line_content(t_cub3d *game, char *current_line_content,
 		trimmed_line = ft_strtrim(current_line_content, "\n");
 		if (!trimmed_line)
 		{
-			handle_error("Error: ft_strtrim failed during map processing due to allocation failure.\n", game);
+			handle_error("Error: ft_strtrim failed during map processing due to allocation failure.\n",
+				game);
 			return (false);
 		}
 		game->config->grid[current_map_grid_index] = trimmed_line;
@@ -120,7 +132,8 @@ static bool	process_map_line_content(t_cub3d *game, char *current_line_content,
 	}
 	else
 	{
-		handle_error("Error: Map dimensions exceed pre-calculated size. Mismatched map row count or invalid map structure.\n", game);
+		handle_error("Error: Map dimensions exceed pre-calculated size. Mismatched map row count or invalid map structure.\n",
+			game);
 		return (false);
 	}
 }
@@ -152,7 +165,7 @@ void	analyze_map_content(t_config *config, t_validator *validator)
 	}
 }
 
-static bool	is_map_content_line(char *line)
+bool	is_map_content_line(char *line)
 {
 	int		i;
 	char	c;

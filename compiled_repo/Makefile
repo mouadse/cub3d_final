@@ -14,7 +14,7 @@ NAME = cub3D
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra  #-fsanitize=leak,address,undefined -g3 -O3
+CFLAGS = -Wall -Wextra  -g3 #-fsanitize=leak,address,undefined -O3
 MLXFLAGS = -lmlx -lXext -lX11 -lm
 
 # Directories

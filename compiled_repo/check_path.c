@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:26:42 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/03 15:12:24 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:06:32 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,13 @@ static void	validate_texture_preconditions(t_cub3d *game,
 		args->identifier, args->original_line);
 }
 
-static char	*extract_and_validate_path_segment(t_cub3d *game,
-		const t_texture_args *args)
+static char	*skip_identifier_and_spaces(const t_texture_args *args,
+		int *identifier_occurrences)
 {
 	char	*path_start;
-	int		identifier_occurrences;
 
 	path_start = args->line_content_start;
-	identifier_occurrences = 0;
+	*identifier_occurrences = 0;
 	while (*path_start && (ft_isspace(*path_start)
 			|| (path_start == args->line_content_start
 				&& ft_strncmp(args->identifier, path_start,
@@ -87,7 +86,7 @@ static char	*extract_and_validate_path_segment(t_cub3d *game,
 			&& ft_strncmp(args->identifier, path_start,
 				ft_strlen(args->identifier)) == 0)
 		{
-			identifier_occurrences++;
+			(*identifier_occurrences)++;
 			path_start += ft_strlen(args->identifier);
 		}
 		else if (ft_isspace(*path_start))
@@ -95,6 +94,16 @@ static char	*extract_and_validate_path_segment(t_cub3d *game,
 		else
 			break ;
 	}
+	return (path_start);
+}
+
+static char	*extract_and_validate_path_segment(t_cub3d *game,
+		const t_texture_args *args)
+{
+	char	*path_start;
+	int		identifier_occurrences;
+
+	path_start = skip_identifier_and_spaces(args, &identifier_occurrences);
 	trim_trailing_whitespace_or_newline(game, path_start, args->original_line);
 	if (!check_path(path_start) || identifier_occurrences != 1)
 	{

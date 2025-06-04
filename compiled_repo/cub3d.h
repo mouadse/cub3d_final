@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 12:43:24 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/03 15:27:36 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/04 14:01:52 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,7 @@ void			check_extension(t_cub3d *game, char *map_file);
 int				check_path(char *path);
 // int				open_file(char *map_file);
 int	open_file(char *map_file, t_cub3d *game);
+bool	is_map_content_line(char *line);
 
 /* Data processing */
 void			process_map_file(t_cub3d *game, char *map_file);
@@ -238,6 +239,7 @@ void			analyze_map_content(t_config *config, t_validator *validator);
 /* Map utility functions */
 void			get_max_lines(t_config *config);
 void			get_max_columns(t_config *config);
+void 			get_max_columns_with_filepath(t_config *config, char *filepath);
 void			check_map_content(t_cub3d *game, t_validator *validator);
 int				check_invalid_char(char c);
 
@@ -249,7 +251,7 @@ char			*replace_tabs(char *line, int tabs);
 /* Memory and error handling */
 void			free_memory(t_cub3d *game); // Signature is fine (takes pointer)
 // t_cub3d			*get_game(t_cub3d *game); // Old signature
-void			handle_error(char *message, t_cub3d *game);
+void			handle_error(char *message, t_cub3d *game) __attribute__((noreturn));
 void			init_variables_valid(t_validator *validator);
 
 /* File reading utilities */
