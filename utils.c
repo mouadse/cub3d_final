@@ -6,135 +6,102 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:30:07 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 16:58:06 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:16:15 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include <stdio.h>
 
-int	ft_isspace(int c)
+char	*extract_line(t_list *node)
 {
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\v' || c == '\f'
-		|| c == '\r');
-}
+	char				*line;
+	int					i;
+	struct s_list_node	*temp;
 
-void	init_variables_valid(t_validator *validator)
-{
-	validator->invalid_char_count = 0;
-	validator->player_count = 0;
-}
-
-/**
- * Singleton-style function to get/initialize the game instance
- * If game is NULL, creates and returns a static instance
- * If game is not NULL, updates the static instance
- */
-t_cub3d	*get_game(t_cub3d *game)
-{
-	static t_cub3d	*instance = NULL;
-
-	if (game != NULL)
-		instance = game;
-	else if (instance == NULL)
-	{
-		instance = (t_cub3d *)malloc(sizeof(t_cub3d));
-		if (!instance)
-			exit(EXIT_FAILURE);
-		instance->config = (t_config *)malloc(sizeof(t_config));
-		if (!instance->config)
-		{
-			free(instance);
-			exit(EXIT_FAILURE);
-		}
-		/* Initialize config members */
-		instance->config->grid = NULL;
-		instance->config->no_texture_path = NULL;
-		instance->config->so_texture_path = NULL;
-		instance->config->we_texture_path = NULL;
-		instance->config->ea_texture_path = NULL;
-		instance->config->floor_rgb = 0;
-		instance->config->ceiling_rgb = 0;
-		instance->config->textures_ready = false;
-		instance->config->loaded_textures = 0;
-		instance->config->grid_rows = 0;
-		instance->config->grid_cols = 0;
-		instance->config->character_orientation = '\0';
-		instance->config->character_pos_x = -1;
-		instance->config->character_pos_y = -1;
-	}
-	return (instance);
-}
-
-/**
- * Error handling function
- * Displays error message and exits program
- */
-void	handle_error(char *message)
-{
-	if (message)
-		write(STDERR_FILENO, message, ft_strlen(message));
-	else
-		write(STDERR_FILENO, "Error: unknown error occurred\n", 30);
-	free_memory(get_game(NULL));
-	exit(EXIT_FAILURE);
-}
-
-/**
- * Safely open a file and return the file descriptor
- * If the file cannot be opened, exit with error
- */
-int	open_file(char *map_file)
-{
-	int		fd;
-	char	error_msg[100] = "Error: could not open file: ";
-
-	fd = open(map_file, O_RDONLY);
-	if (fd == -1)
-	{
-		ft_strlcat(error_msg, map_file, sizeof(error_msg));
-		ft_strlcat(error_msg, "\n", sizeof(error_msg));
-		handle_error(error_msg);
-	}
-	return (fd);
-}
-
-/**
- * Free a 2D array (matrix)
- * Safely handles NULL pointers
- */
-void	ft_free_matrix(char **matrix)
-{
-	int	i;
-
-	if (!matrix)
-		return ;
 	i = 0;
-	while (matrix[i])
+	temp = node->head;
+	while (temp && temp->data != '\n')
 	{
-		free(matrix[i]);
+		temp = temp->next;
 		i++;
 	}
-	free(matrix);
+	line = malloc(sizeof(char) * (i + 2));
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (node->head && node->head->data != '\n')
+		line[i++] = pop_node(node);
+	line[i++] = pop_node(node);
+	line[i] = '\0';
+	return (line);
 }
 
-/**
- * Free all allocated memory in the game structure
- */
+int	is_it_empty(t_list *node)
+{
+	return (node->head == NULL);
+}
+
+static void	free_single_texture(void *mlx_ptr, t_tex *texture)
+{
+	if (texture)
+	{
+		if (texture->ptr && mlx_ptr)
+		{
+			mlx_destroy_image(mlx_ptr, texture->ptr);
+		}
+		free(texture);
+	}
+}
+
+static void	free_config_and_textures(t_cub3d *game)
+{
+	if (game->config)
+	{
+		if (game->config->no_texture_path)
+			free(game->config->no_texture_path);
+		if (game->config->so_texture_path)
+			free(game->config->so_texture_path);
+		if (game->config->we_texture_path)
+			free(game->config->we_texture_path);
+		if (game->config->ea_texture_path)
+			free(game->config->ea_texture_path);
+		if (game->config->grid)
+			ft_free_matrix(game->config->grid);
+	}
+	if (game->mlx)
+	{
+		free_single_texture(game->mlx, game->north_texture);
+		free_single_texture(game->mlx, game->south_texture);
+		free_single_texture(game->mlx, game->west_texture);
+		free_single_texture(game->mlx, game->east_texture);
+	}
+	game->north_texture = NULL;
+	game->south_texture = NULL;
+	game->west_texture = NULL;
+	game->east_texture = NULL;
+	game->texture = NULL;
+}
+
 void	free_memory(t_cub3d *game)
 {
 	if (!game)
 		return ;
-	if (game->config)
+	free_config_and_textures(game);
+	if (game->img.ptr && game->mlx)
 	{
-		if (game->config->grid)
-			ft_free_matrix(game->config->grid);
-		free(game->config->no_texture_path);
-		free(game->config->so_texture_path);
-		free(game->config->we_texture_path);
-		free(game->config->ea_texture_path);
-		free(game->config);
+		mlx_destroy_image(game->mlx, game->img.ptr);
+		game->img.ptr = NULL;
 	}
-	/* Don't free game itself if it's the static instance */
-	if (game != get_game(NULL))
-		free(game);
+	if (game->win && game->mlx)
+	{
+		mlx_destroy_window(game->mlx, game->win);
+		game->win = NULL;
+	}
+	if (game->mlx)
+	{
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+		game->mlx = NULL;
+	}
 }

@@ -6,12 +6,11 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 12:44:35 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 17:43:11 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 12:20:53 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
-#include <sys/time.h> // This line will need to be removed later
 
 uint32_t	tex_pixel(t_tex *t, int x, int y)
 {
@@ -28,8 +27,7 @@ void	init_image(t_cub3d *g, int w, int h)
 	g->img.ptr = mlx_new_image(g->mlx, w, h);
 	if (!g->img.ptr)
 	{
-		perror("mlx_new_image");
-		exit(EXIT_FAILURE);
+		handle_error("Error: mlx_new_image() failed in init_image\n", g);
 	}
 	g->img.addr = mlx_get_data_addr(g->img.ptr, &g->img.bpp, &g->img.line_len,
 			&g->img.endian);
@@ -45,15 +43,4 @@ void	my_mlx_pixel_put(t_img *img, int x, int y, uint32_t col)
 		return ;
 	dst = img->addr + (y * img->line_len + x * (img->bpp / 8));
 	*(uint32_t *)dst = col;
-}
-
-double	now_sec(void)
-{
-	// Warning:
-	// To be removed later and replaced with a low level function to get the time
-	// Since the use of this function is forbidden in the subject
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec + tv.tv_usec / 1e6);
 }

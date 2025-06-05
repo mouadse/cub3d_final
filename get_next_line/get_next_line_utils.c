@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 01:08:03 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/09 13:08:32 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:15:27 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,20 @@ int	has_new_line(t_list *node)
 	return (0);
 }
 
-int	is_it_empty(t_list *node)
+// int	is_it_empty(t_list *node)
+// {
+// 	return (node->head == NULL);
+// }
+
+void	free_queue(t_list *node)
 {
-	return (node->head == NULL);
+	struct s_list_node	*temp;
+
+	while (node->head)
+	{
+		temp = node->head;
+		node->head = node->head->next;
+		free(temp);
+	}
+	node->tail = NULL;
 }

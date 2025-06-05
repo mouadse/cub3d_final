@@ -6,15 +6,15 @@
 #    By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/10 12:31:32 by msennane          #+#    #+#              #
-#    Updated: 2025/05/07 15:50:01 by msennane         ###   ########.fr        #
+#    Updated: 2025/06/05 13:47:55 by msennane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = cub3d
+NAME = cub3D
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra #-fsanitize=address,leak,undefined -O3 -g3
+CFLAGS = -Wall -Wextra -O3 #-g3 -fsanitize=leak,address,undefined
 MLXFLAGS = -lmlx -lXext -lX11 -lm
 
 # Directories
@@ -26,7 +26,9 @@ SRCS = main.c validation.c check_path.c data_processing.c \
 	check_rgb.c map.c map_utils.c tabs.c utils.c check_wall.c \
 	camera.c event_hooks.c raycasting.c raycasting_utils.c \
 	render_background.c textures.c vector_ops.c wall_rendering.c \
-	wall_utils.c player_movement.c my_mlx_utils.c
+	wall_utils.c player_movement.c my_mlx_utils.c check_path_colors.c \
+	check_path_identifiers.c check_path_textures.c map_utils2.c \
+	utils2.c vector_ops2.c check_rgb2.c
 
 # Get_next_line files
 GNL_SRCS = $(GNL_DIR)/get_next_line.c $(GNL_DIR)/get_next_line_utils.c
@@ -64,4 +66,11 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+test:
+	@echo "Running basic execution tests with sanitizers..."
+	@echo "Please close the game window manually if it opens, to proceed to the next test."
+	@echo "Observe the console for sanitizer messages or crashes."
+	@sh ./run_tests.sh
+
+.PHONY: all clean fclean re test
+.SECONDARY: $(OBJS)

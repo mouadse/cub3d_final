@@ -6,102 +6,159 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:28:43 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/10 12:28:50 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:11:39 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-static void	is_not_bar_n(bool *is_map, bool *map_ended, char *temp, int size);
+static bool	process_map_line_content(t_cub3d *game, char *current_line_content,
+				int current_map_grid_index);
 
-void	count_map_size(t_config *config, char *temp, int fd)
+static void	skip_to_map_content(t_cub3d *game, int fd, char **current_line)
 {
-	int	map_size;
-
-	map_size = 0;
-	temp = get_next_line(fd);
-	while (temp)
+	*current_line = get_next_line(fd);
+	while (*current_line && !is_map_content_line(*current_line))
 	{
-		map_size++;
-		free(temp);
-		temp = get_next_line(fd);
+		free(*current_line);
+		*current_line = get_next_line(fd);
 	}
-	close(fd);
-	if (map_size == 0)
-		handle_error("Error: missing map.\n");
-	config->grid = ft_calloc(sizeof(char *), (map_size + 1));
-	if (!config->grid)
-		handle_error("Error: ft_calloc.\n");
+	if (!*current_line)
+	{
+		handle_error(ERR_NO_MAP_CONTENT, game);
+		return ;
+	}
 }
 
-void	read_and_copy_map_content(char *temp, int fd)
-{
-	int		size;
-	bool	is_map;
-	bool	map_ended;
+// static bool	process_map_line(t_cub3d *game, char *current_line,
+// 		bool *is_map_content_started, bool *is_map_content_ended,
+// 		int *current_grid_idx)
+// {
+// 	if (current_line[0] == '\n')
+// 	{
+// 		if (*is_map_content_started)
+// 			*is_map_content_ended = true;
+// 	}
+// 	else
+// 	{
+// 		if (*is_map_content_ended)
+// 		{
+// 			free(current_line);
+// 			handle_error(ERR_MAP_AFTER_EMPTY, game);
+// 			return (false);
+// 		}
+// 		*is_map_content_started = true;
+// 		if (process_map_line_content(game, current_line, *current_grid_idx))
+// 		{
+// 			(*current_grid_idx)++;
+// 		}
+// 	}
+// 	return (true);
+// }
 
-	size = 0;
-	is_map = false;
-	map_ended = false;
-	temp = get_next_line(fd);
-	while (temp)
+// void	read_and_copy_map_content(t_cub3d *game, int fd)
+// {
+// 	char	*current_line;
+// 	int		current_grid_idx;
+// 	bool	is_map_content_started;
+// 	bool	is_map_content_ended;
+
+// 	skip_to_map_content(game, fd, &current_line);
+// 	if (!current_line)
+// 		return ;
+// 	current_grid_idx = 0;
+// 	is_map_content_started = false;
+// 	is_map_content_ended = false;
+// 	while (current_line)
+// 	{
+// 		if (!process_map_line(game, current_line, &is_map_content_started,
+// 				&is_map_content_ended, &current_grid_idx))
+// 			return ;
+// 		free(current_line);
+// 		current_line = get_next_line(fd);
+// 	}
+// 	if (game->config && game->config->grid)
+// 		game->config->grid[current_grid_idx] = NULL;
+// 	if (current_grid_idx == 0)
+// 		handle_error(ERR_NO_VALID_MAP, game);
+// 	if (game->config)
+// 		game->config->grid_rows = current_grid_idx;
+// }
+
+static bool	process_map_line(t_cub3d *game, char *current_line, bool flags[2],
+		int *current_grid_idx)
+{
+	bool	*is_map_content_started;
+	bool	*is_map_content_ended;
+
+	is_map_content_started = &flags[MAP_STARTED];
+	is_map_content_ended = &flags[MAP_ENDED];
+	if (current_line[0] == '\n')
 	{
-		if (temp[0] == '\n')
+		if (*is_map_content_started)
+			*is_map_content_ended = true;
+	}
+	else
+	{
+		if (*is_map_content_ended)
 		{
-			if (is_map && !map_ended)
-				map_ended = true;
+			free(current_line);
+			handle_error(ERR_MAP_AFTER_EMPTY, game);
+			return (false);
 		}
-		else
-			is_not_bar_n(&is_map, &map_ended, temp, size);
-		size++;
-		free(temp);
-		temp = get_next_line(fd);
+		*is_map_content_started = true;
+		if (process_map_line_content(game, current_line, *current_grid_idx))
+			(*current_grid_idx)++;
 	}
-	close(fd);
+	return (true);
 }
 
-static void	is_not_bar_n(bool *is_map, bool *map_ended, char *temp, int size)
+void	read_and_copy_map_content(t_cub3d *game, int fd)
 {
-	t_cub3d		*game;
-	static int	i;
+	char	*current_line;
+	int		current_grid_idx;
+	bool	flags[2];
 
-	game = get_game(NULL);
-	if (*map_ended)
+	flags[0] = false;
+	flags[1] = false;
+	skip_to_map_content(game, fd, &current_line);
+	if (!current_line)
+		return ;
+	current_grid_idx = 0;
+	while (current_line)
 	{
-		free(temp);
-		handle_error("Error: map invalid.\n");
+		if (!process_map_line(game, current_line, flags, &current_grid_idx))
+			return ;
+		free(current_line);
+		current_line = get_next_line(fd);
 	}
-	if (size >= game->config->loaded_textures)
-	{
-		game->config->grid[i] = ft_strdup(temp);
-		i++;
-		*is_map = true;
-	}
+	if (game->config && game->config->grid)
+		game->config->grid[current_grid_idx] = NULL;
+	if (current_grid_idx == 0)
+		handle_error(ERR_NO_VALID_MAP, game);
+	if (game->config)
+		game->config->grid_rows = current_grid_idx;
 }
 
-void	analyze_map_content(t_config *config, t_validator *validator)
+static bool	process_map_line_content(t_cub3d *game, char *current_line_content,
+		int current_map_grid_index)
 {
-	int	i;
-	int	j;
+	char	*trimmed_line;
 
-	i = 0;
-	while (config->grid[i])
+	if (current_map_grid_index < game->config->grid_rows)
 	{
-		j = 0;
-		while (config->grid[i][j])
+		trimmed_line = ft_strtrim(current_line_content, "\n");
+		if (!trimmed_line)
 		{
-			if (check_invalid_char(config->grid[i][j]) == 0)
-				validator->invalid_char_count++;
-			else if (config->grid[i][j] == 'N' || config->grid[i][j] == 'S'
-				|| config->grid[i][j] == 'E' || config->grid[i][j] == 'W')
-			{
-				validator->player_count++;
-				config->character_orientation = config->grid[i][j];
-				config->character_pos_y = i;
-				config->character_pos_x = j;
-			}
-			j++;
+			handle_error(ERR_FT_STRTRIM_FAIL, game);
+			return (false);
 		}
-		i++;
+		game->config->grid[current_map_grid_index] = trimmed_line;
+		return (true);
+	}
+	else
+	{
+		handle_error(ERR_MAP_DIMENSIONS, game);
+		return (false);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 01:08:05 by msennane          #+#    #+#             */
-/*   Updated: 2025/04/09 13:08:47 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:16:20 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,8 @@ char					pop_node(t_list *node);
 int						has_new_line(t_list *node);
 int						is_it_empty(t_list *node);
 char					*get_next_line(int fd);
+void					cleanup_get_next_line(void);
+void					free_queue(t_list *node);
+char					*extract_line(t_list *node);
 
 #endif

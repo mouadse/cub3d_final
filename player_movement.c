@@ -6,7 +6,7 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 17:37:02 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 16:56:37 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 13:33:27 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 static bool	is_walkable(t_cub3d *game, float x, float y)
 {
-	const float	margin = 0.1f;
+	const float	collision_margin = 0.1f;
 
-	if (game->config->grid[(int)(y + margin * sign_of(y
+	if (game->config->grid[(int)(y + collision_margin * sign_of(y
 				- game->player_pos.y))][(int)x] == '1')
 		return (false);
-	if (game->config->grid[(int)y][(int)(x + margin * sign_of(x
-				- game->player_pos.x))] == '1')
+	if (game->config->grid[(int)y][(int)(x + collision_margin * sign_of(x
+			- game->player_pos.x))] == '1')
 		return (false);
-	if (game->config->grid[(int)(y + margin
+	if (game->config->grid[(int)(y + collision_margin
 			* sign_of(game->camera_plane.y))][(int)x] == '1')
 		return (false);
-	if (game->config->grid[(int)y][(int)(x + margin
-			* sign_of(game->camera_plane.x))] == '1')
+	if (game->config->grid[(int)y][(int)(x + collision_margin
+		* sign_of(game->camera_plane.x))] == '1')
 		return (false);
 	return (true);
 }
@@ -60,27 +60,39 @@ static void	compute_target_position(t_cub3d *game, float *out_x, float *out_y)
 	}
 }
 
+static void	prepare_movement_params(t_cub3d *game, float *target_x,
+		float *target_y, float *rotation_speed)
+{
+	game->lerp_factor = 1.0f;
+	*rotation_speed = game->frame_time * 40.5f;
+	compute_target_position(game, target_x, target_y);
+}
+
 void	update_player_movement(t_cub3d *game)
 {
 	float	target_x;
 	float	target_y;
-	float	lerp_factor;
+	float	rotation_speed;
 
-	lerp_factor = 1.0f;
-	compute_target_position(game, &target_x, &target_y);
-	if (is_walkable(game, target_x, target_y))
+	prepare_movement_params(game, &target_x, &target_y, &rotation_speed);
+	if (is_walkable(game, target_x, game->player_pos.y))
 	{
-		game->player_pos.x += lerp_factor * (target_x - game->player_pos.x);
-		game->player_pos.y += lerp_factor * (target_y - game->player_pos.y);
+		game->player_pos.x += game->lerp_factor * (target_x
+				- game->player_pos.x);
+	}
+	if (is_walkable(game, game->player_pos.x, target_y))
+	{
+		game->player_pos.y += game->lerp_factor * (target_y
+				- game->player_pos.y);
 	}
 	if (game->keys.left)
 	{
-		game->player_dir = rotate_vector(game->player_dir, -1.5f);
-		game->camera_plane = rotate_vector(game->camera_plane, -1.5f);
+		game->player_dir = rotate_vector(game->player_dir, -rotation_speed);
+		game->camera_plane = rotate_vector(game->camera_plane, -rotation_speed);
 	}
 	if (game->keys.right)
 	{
-		game->player_dir = rotate_vector(game->player_dir, 1.5f);
-		game->camera_plane = rotate_vector(game->camera_plane, 1.5f);
+		game->player_dir = rotate_vector(game->player_dir, rotation_speed);
+		game->camera_plane = rotate_vector(game->camera_plane, rotation_speed);
 	}
 }

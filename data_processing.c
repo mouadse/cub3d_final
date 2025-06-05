@@ -6,47 +6,60 @@
 /*   By: msennane <msennane@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:31:51 by msennane          #+#    #+#             */
-/*   Updated: 2025/06/02 17:45:54 by msennane         ###   ########.fr       */
+/*   Updated: 2025/06/05 12:20:47 by msennane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-void	process_map_file(char *map_file, t_config *config)
+void	process_map_file(t_cub3d *game, char *map_file)
 {
-	char	*temp;
-	int		fd;
+	int	fd;
 
-	temp = NULL;
-	fd = open_file(map_file);
-	read_textures_path(config, temp, fd);
-	count_map_size(config, temp, fd);
-	fd = open_file(map_file);
-	read_and_copy_map_content(temp, fd);
-	if (config->grid == NULL)
-		handle_error("Error: invalid map.\n");
-	get_max_columns(config);
-	get_max_lines(config);
+	fd = open_file(map_file, game);
+	read_textures_path(game, fd);
+	close(fd);
+	count_map_size(game, map_file);
+	fd = open_file(map_file, game);
+	read_and_copy_map_content(game, fd);
+	close(fd);
+	if (game->config->grid == NULL || game->config->grid[0] == NULL)
+		handle_error("Error: Map grid is empty or was not loaded correctly.\n",
+			game);
+	get_max_columns(game->config);
+	get_max_lines(game->config);
 }
 
-void	read_textures_path(t_config *config, char *temp, int fd)
+static void	proc_texture_line(t_cub3d *game, char *line_content)
 {
-	char	*line;
+	char	*current_line_trimmed_start;
 
-	temp = get_next_line(fd);
-	while (temp)
+	current_line_trimmed_start = line_content;
+	while (ft_isspace(*current_line_trimmed_start))
+		current_line_trimmed_start++;
+	if (*current_line_trimmed_start != '\0')
+		parse_texture_file_path(game, game->config, current_line_trimmed_start,
+			line_content);
+}
+
+void	read_textures_path(t_cub3d *game, int fd)
+{
+	char	*line_content;
+
+	line_content = get_next_line(fd);
+	while (line_content)
 	{
-		line = temp;
-		while (ft_isspace(*temp))
-			temp++;
-		parse_texture_file_path(config, temp, line);
-		free(line);
-		if (config->no_texture_path && config->so_texture_path
-			&& config->we_texture_path && config->ea_texture_path
-			&& config->textures_ready)
+		if (is_map_content_line(line_content))
+		{
+			free(line_content);
 			break ;
-		temp = get_next_line(fd);
+		}
+		proc_texture_line(game, line_content);
+		free(line_content);
+		line_content = get_next_line(fd);
 	}
-	if (!temp)
-		handle_error("Error: invalid file.\n");
+	if (!(game->config->no_texture_path && game->config->so_texture_path
+			&& game->config->we_texture_path && game->config->ea_texture_path
+			&& game->config->textures_ready))
+		handle_error(ERR_MISSING_TEXTURES, game);
 }
